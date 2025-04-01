@@ -6,14 +6,14 @@
     <title>TRACK N GO - Driver Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="icon" href="images/Logo.png" type="image/png">
+    <link rel="icon" href="bus-icon.png" type="image/png">
 </head>
 <body>
     <div class="container">
         <header>
             <div class="logo">
-                <img src="images/Logo.png" alt="Bus Icon">
-                <h1>TRACK N GO DRIVER</h1>
+                <img src="bus-icon.png" alt="Bus Icon">
+                <h1>TRACHAGO DRIVER</h1>
             </div>
             <p>Driver Dashboard</p>
         </header>
@@ -31,7 +31,14 @@
                     <i class="fas fa-bus"></i>
                     <div>
                         <h3>Assigned Bus</h3>
-                        <p id="assignedBus">Not assigned</p>
+                        <p id="driverBusDisplay">Not assigned</p>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-route"></i>
+                    <div>
+                        <h3>Assigned Route</h3>
+                        <p id="driverRouteDisplay">Not assigned</p>
                     </div>
                 </div>
                 <div class="info-card">
@@ -52,15 +59,11 @@
                     <i class="fas fa-stop-circle"></i>
                     <span>End Shift</span>
                 </button>
-                <button class="driver-btn" id="reportIssueBtn">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <span>Report Issue</span>
+                <button class="driver-btn" id="viewRouteBtn">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <span>View Route</span>
                 </button>
-                <button class="driver-btn" id="viewScheduleBtn">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span>View Schedule</span>
-                </button>
-                <button class="driver-btn logout-btn" id="driverLogoutBtn">
+                <button class="driver-btn logout-btn" id="logoutBtn">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Logout</span>
                 </button>
@@ -74,8 +77,10 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Get driver ID from session
-            const driverId = sessionStorage.getItem('currentDriver');
+            // Check if driver is logged in
+            const driverId = sessionStorage.getItem('driverId');
+            const driverRoute = sessionStorage.getItem('driverRoute');
+            const driverBus = sessionStorage.getItem('driverBus');
             
             if (!driverId) {
                 alert('Please login first');
@@ -85,21 +90,14 @@
 
             // Display driver info
             document.getElementById('driverIdDisplay').textContent = driverId;
-            
-            // Assign bus based on driver ID (demo logic)
-            const busAssignments = {
-                'DRV-1001': 'B-101 (Route 1: Mohopada to Panvel)',
-                'DRV-1002': 'B-202 (Route 2: Khopoli to Panvel)',
-                'DRV-1003': 'B-303 (Route 3: Khopoli to Rasayani)'
-            };
-            
-            document.getElementById('assignedBus').textContent = 
-                busAssignments[driverId] || 'Not assigned';
+            document.getElementById('driverBusDisplay').textContent = driverBus;
+            document.getElementById('driverRouteDisplay').textContent = driverRoute;
 
             // Button functionality
             const startShiftBtn = document.getElementById('startShiftBtn');
             const endShiftBtn = document.getElementById('endShiftBtn');
-            const logoutBtn = document.getElementById('driverLogoutBtn');
+            const viewRouteBtn = document.getElementById('viewRouteBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
             const statusDisplay = document.getElementById('driverStatus');
             
             startShiftBtn.addEventListener('click', function() {
@@ -120,16 +118,20 @@
                 }
             });
             
+            viewRouteBtn.addEventListener('click', function() {
+                alert(`This would show the map for ${driverRoute}`);
+                // In a real app, this would open the map view for the assigned route
+            });
+            
             logoutBtn.addEventListener('click', function() {
                 if (confirm('Are you sure you want to logout?')) {
-                    sessionStorage.removeItem('currentDriver');
+                    sessionStorage.removeItem('driverId');
+                    sessionStorage.removeItem('driverRoute');
+                    sessionStorage.removeItem('driverBus');
                     window.location.href = 'index.html';
                 }
             });
-
-            // Demo functionality for other buttons
-            document.getElementById('reportIssueBtn').addEventListener('click', function() {
-                const issue = prompt('Please describe the issue:');
-                if (issue) {
-                    alert(`Issue reported: "${issue}". Maintenance team has been notified.`);
-                }
+        });
+    </script>
+</body>
+</html>
