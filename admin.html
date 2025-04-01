@@ -19,34 +19,13 @@
         </header>
 
         <main>
-            <div class="admin-info">
-                <div class="info-card">
-                    <i class="fas fa-user-shield"></i>
-                    <div>
-                        <h3>Administrator</h3>
-                        <p>admin@trackngo.com</p>
-                    </div>
-                </div>
-                <div class="info-card">
-                    <i class="fas fa-calendar-alt"></i>
-                    <div>
-                        <h3>Last Login</h3>
-                        <p id="lastLogin">Just now</p>
-                    </div>
-                </div>
-            </div>
-
             <div class="admin-actions">
-                <button class="admin-btn" id="manageBusesBtn">
-                    <i class="fas fa-bus"></i>
-                    <span>Manage Buses</span>
-                </button>
-                <button class="admin-btn" id="manageRoutesBtn">
-                    <i class="fas fa-route"></i>
-                    <span>Manage Routes</span>
+                <button class="admin-btn" id="addDriverBtn">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Add Driver</span>
                 </button>
                 <button class="admin-btn" id="manageDriversBtn">
-                    <i class="fas fa-user-tie"></i>
+                    <i class="fas fa-users-cog"></i>
                     <span>Manage Drivers</span>
                 </button>
                 <button class="admin-btn" id="viewReportsBtn">
@@ -58,6 +37,40 @@
                     <span>Logout</span>
                 </button>
             </div>
+
+            <!-- Add Driver Form (hidden by default) -->
+            <div class="add-driver-container hidden" id="addDriverContainer">
+                <h2>Add New Driver</h2>
+                <form id="addDriverForm">
+                    <div class="form-group">
+                        <label for="newDriverName"><i class="fas fa-user"></i> Full Name</label>
+                        <input type="text" id="newDriverName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newDriverId"><i class="fas fa-id-card"></i> Driver ID</label>
+                        <input type="text" id="newDriverId" required placeholder="DRV-XXXX">
+                    </div>
+                    <div class="form-group">
+                        <label for="newDriverPin"><i class="fas fa-lock"></i> PIN</label>
+                        <input type="password" id="newDriverPin" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newDriverRoute"><i class="fas fa-route"></i> Assigned Route</label>
+                        <select id="newDriverRoute" required>
+                            <option value="">Select Route</option>
+                            <option value="Route 1: Downtown Loop">Route 1: Downtown Loop</option>
+                            <option value="Route 2: University Express">Route 2: University Express</option>
+                            <option value="Route 3: Suburban Connector">Route 3: Suburban Connector</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="newDriverBus"><i class="fas fa-bus"></i> Assigned Bus</label>
+                        <input type="text" id="newDriverBus" required placeholder="B-XXX">
+                    </div>
+                    <button type="submit" class="login-btn">Add Driver</button>
+                    <button type="button" class="cancel-btn" id="cancelAddDriver">Cancel</button>
+                </form>
+            </div>
         </main>
 
         <footer>
@@ -67,39 +80,55 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Simple protection - in real app would use proper session management
+            // Check if admin is logged in
             if (!sessionStorage.getItem('adminLoggedIn')) {
                 alert('Please login first');
                 window.location.href = 'index.html';
                 return;
             }
 
-            // Set last login time
-            const now = new Date();
-            document.getElementById('lastLogin').textContent = 
-                now.toLocaleString('en-US', { 
-                    month: 'short', 
-                    day: 'numeric', 
-                    hour: '2-digit', 
-                    minute: '2-digit' 
-                });
+            // DOM Elements
+            const addDriverBtn = document.getElementById('addDriverBtn');
+            const manageDriversBtn = document.getElementById('manageDriversBtn');
+            const viewReportsBtn = document.getElementById('viewReportsBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const addDriverContainer = document.getElementById('addDriverContainer');
+            const cancelAddDriver = document.getElementById('cancelAddDriver');
+            const addDriverForm = document.getElementById('addDriverForm');
 
             // Button functionality
-            document.getElementById('logoutBtn').addEventListener('click', function() {
+            addDriverBtn.addEventListener('click', function() {
+                addDriverContainer.classList.remove('hidden');
+            });
+
+            manageDriversBtn.addEventListener('click', function() {
+                alert('This would show the driver management interface');
+            });
+
+            viewReportsBtn.addEventListener('click', function() {
+                alert('This would show system reports and analytics');
+            });
+
+            cancelAddDriver.addEventListener('click', function() {
+                addDriverContainer.classList.add('hidden');
+                addDriverForm.reset();
+            });
+
+            addDriverForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                // In a real app, this would save the new driver to the database
+                alert('Driver added successfully!');
+                addDriverContainer.classList.add('hidden');
+                addDriverForm.reset();
+            });
+
+            logoutBtn.addEventListener('click', function() {
                 if (confirm('Are you sure you want to logout?')) {
                     sessionStorage.removeItem('adminLoggedIn');
                     window.location.href = 'index.html';
                 }
             });
-
-            // Demo functionality for other buttons
-            const buttons = ['manageBusesBtn', 'manageRoutesBtn', 'manageDriversBtn', 'viewReportsBtn'];
-            buttons.forEach(btnId => {
-                document.getElementById(btnId).addEventListener('click', function() {
-                    alert(`This would open the ${btnId.replace('Btn', '').replace(/([A-Z])/g, ' $1').trim()} section`);
-                });
-            });
         });
     </script>
 </body>
-</html>J
+</html>
