@@ -6,9 +6,9 @@ document.addEventListener('DOMContentLoaded', function() {
             password: "admin123"
         },
         drivers: {
-            "DRV-1001": "7890",
-            "DRV-1002": "4567",
-            "DRV-1003": "1234"
+            "DRIVER-101": "1111",
+            "DRIVER-102": "2222",
+            "DRIVER-103": "3333"
         }
     };
 
