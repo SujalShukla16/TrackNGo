@@ -1,178 +1,118 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Predefined credentials (in a real app, these would come from a database)
+    // Predefined credentials
     const validCredentials = {
         admin: {
             username: "admin",
             password: "admin123"
         },
         drivers: {
-            "DRIVER-101": "1111",
-            "DRIVER-102": "2222",
-            "DRIVER-103": "3333"
+            "DRV-1001": { pin: "7890", route: "Route 1: Downtown Loop", bus: "B-101" },
+            "DRV-1002": { pin: "4567", route: "Route 2: University Express", bus: "B-202" },
+            "DRV-1003": { pin: "1234", route: "Route 3: Suburban Connector", bus: "B-303" }
         }
     };
 
-    // Sample timetable data
-    const routeTimetables = {
-        'Route 1: Mohopada to Panvel': [
-            { busNumber: 'B-101', departure: '06:00 AM', arrival: '07:20 AM' },
-            { busNumber: 'B-102', departure: '06:20 AM', arrival: '07:40 AM' },
-            { busNumber: 'B-103', departure: '06:40 AM', arrival: '08:00 AM' },
-            { busNumber: 'B-104', departure: '07:00 AM', arrival: '08:20 AM' },
-            { busNumber: 'B-105', departure: '07:20 AM', arrival: '08:40 AM' },
-            { busNumber: 'B-106', departure: '04:00 PM', arrival: '05:20 PM' },
-            { busNumber: 'B-107', departure: '04:20 PM', arrival: '05:40 PM' },
-            { busNumber: 'B-108', departure: '04:40 PM', arrival: '06:00 PM' }
-        ],
-        'Route 2: Khopoli to Panvel': [
-            { busNumber: 'B-201', departure: '06:15 AM', arrival: '07:00 AM' },
-            { busNumber: 'B-202', departure: '07:15 AM', arrival: '08:00 AM' },
-            { busNumber: 'B-203', departure: '08:15 AM', arrival: '09:00 AM' },
-            { busNumber: 'B-204', departure: '03:15 PM', arrival: '04:00 PM' },
-            { busNumber: 'B-205', departure: '04:15 PM', arrival: '05:00 PM' },
-            { busNumber: 'B-206', departure: '05:15 PM', arrival: '06:00 PM' }
-        ],
-        'Route 3: Khopoli to Rasayani': [
-            { busNumber: 'B-301', departure: '05:30 AM', arrival: '06:30 AM' },
-            { busNumber: 'B-302', departure: '06:30 AM', arrival: '07:30 AM' },
-            { busNumber: 'B-303', departure: '07:30 AM', arrival: '08:30 AM' },
-            { busNumber: 'B-304', departure: '04:30 PM', arrival: '05:30 PM' },
-            { busNumber: 'B-305', departure: '05:30 PM', arrival: '06:30 PM' }
-        ]
+    // Route information
+    const routeInfo = {
+        "Route 1: Downtown Loop": {
+            description: "Stops: 15 | Frequency: 20 mins",
+            mapInfo: "Downtown area covering main business district and shopping centers"
+        },
+        "Route 2: University Express": {
+            description: "Stops: 8 | Frequency: 15 mins",
+            mapInfo: "Connects university campus with student residential areas"
+        },
+        "Route 3: Suburban Connector": {
+            description: "Stops: 12 | Frequency: 30 mins",
+            mapInfo: "Links suburban neighborhoods with downtown transfer station"
+        }
     };
 
     // DOM Elements
-
-    const viewRoutesBtn = document.getElementById('viewRoutesBtn');
+    const trackBusBtn = document.getElementById('trackBusBtn');
     const driverBtn = document.getElementById('driverBtn');
     const adminBtn = document.getElementById('adminBtn');
     
+    const routesContainer = document.getElementById('routesContainer');
+    const mapContainer = document.getElementById('mapContainer');
     const driverLoginContainer = document.getElementById('driverLoginContainer');
     const adminLoginContainer = document.getElementById('adminLoginContainer');
-    const mapContainer = document.getElementById('mapContainer');
-    const routesContainer = document.getElementById('routesContainer');
-    const timetableContainer = document.getElementById('timetableContainer');
+    
+    const backFromRoutes = document.getElementById('backFromRoutes');
+    const backFromMap = document.getElementById('backFromMap');
+    const cancelDriverLogin = document.getElementById('cancelDriverLogin');
+    const cancelAdminLogin = document.getElementById('cancelAdminLogin');
     
     const driverLoginForm = document.getElementById('driverLoginForm');
     const adminLoginForm = document.getElementById('adminLoginForm');
     
-    const cancelDriverLogin = document.getElementById('cancelDriverLogin');
-    const cancelAdminLogin = document.getElementById('cancelAdminLogin');
-    
-    const backFromMap = document.getElementById('backFromMap');
-    const backFromRoutes = document.getElementById('backFromRoutes');
-    const backFromTimetable = document.getElementById('backFromTimetable');
-    
-    const timetableList = document.getElementById('timetableList');
-    const timetableRouteName = document.getElementById('timetableRouteName');
+    const mapRouteName = document.getElementById('mapRouteName');
+    const mapDescription = document.getElementById('mapDescription');
 
     // Event Listeners
-    viewRoutesBtn.addEventListener('click', showRoutes);
+    trackBusBtn.addEventListener('click', showRoutes);
     driverBtn.addEventListener('click', showDriverLogin);
     adminBtn.addEventListener('click', showAdminLogin);
     
-    cancelDriverLogin.addEventListener('click', hideDriverLogin);
-    cancelAdminLogin.addEventListener('click', hideAdminLogin);
-    
-    backFromMap.addEventListener('click', hideMap);
-    backFromRoutes.addEventListener('click', hideRoutes);
-    backFromTimetable.addEventListener('click', hideTimetable);
+    backFromRoutes.addEventListener('click', showHome);
+    backFromMap.addEventListener('click', showRoutes);
+    cancelDriverLogin.addEventListener('click', showHome);
+    cancelAdminLogin.addEventListener('click', showHome);
     
     driverLoginForm.addEventListener('submit', handleDriverLogin);
     adminLoginForm.addEventListener('submit', handleAdminLogin);
 
+    // Make route items clickable
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.route-item')) {
+            const routeItem = e.target.closest('.route-item');
+            const routeName = routeItem.querySelector('h3').textContent;
+            showMap(routeName);
+        }
+    });
+
     // View Management Functions
-    function showMap() {
-        hideAllViews();
-        mapContainer.classList.remove('hidden');
+    function showHome() {
+        document.querySelector('.action-buttons').classList.remove('hidden');
+        routesContainer.classList.add('hidden');
+        mapContainer.classList.add('hidden');
+        driverLoginContainer.classList.add('hidden');
+        adminLoginContainer.classList.add('hidden');
     }
 
     function showRoutes() {
-        hideAllViews();
+        document.querySelector('.action-buttons').classList.add('hidden');
         routesContainer.classList.remove('hidden');
-        
-        // Make route items clickable
-        const routeItems = document.querySelectorAll('.route-item');
-        routeItems.forEach(item => {
-            item.addEventListener('click', function() {
-                const routeName = this.querySelector('h3').textContent;
-                showTimetable(routeName);
-            });
-        });
+        mapContainer.classList.add('hidden');
+        driverLoginContainer.classList.add('hidden');
+        adminLoginContainer.classList.add('hidden');
     }
 
-    function showTimetable(routeName) {
-        hideAllViews();
-        timetableContainer.classList.remove('hidden');
-        timetableRouteName.textContent = routeName;
+    function showMap(routeName) {
+        document.querySelector('.action-buttons').classList.add('hidden');
+        routesContainer.classList.add('hidden');
+        mapContainer.classList.remove('hidden');
+        driverLoginContainer.classList.add('hidden');
+        adminLoginContainer.classList.add('hidden');
         
-        // Clear previous timetable
-        timetableList.innerHTML = '';
-        
-        // Add timetable items
-        if (routeTimetables[routeName]) {
-            routeTimetables[routeName].forEach(trip => {
-                const timetableItem = document.createElement('div');
-                timetableItem.className = 'timetable-item';
-                timetableItem.innerHTML = `
-                    <span class="bus-number">${trip.busNumber}</span>
-                    <span class="time">${trip.departure}</span>
-                    <span class="time">${trip.arrival}</span>
-                `;
-                timetableList.appendChild(timetableItem);
-            });
-        } else {
-            timetableList.innerHTML = '<div class="error-message">No timetable available for this route</div>';
-        }
+        mapRouteName.textContent = routeName;
+        mapDescription.textContent = routeInfo[routeName].mapInfo;
     }
 
     function showDriverLogin() {
-        hideAllViews();
+        document.querySelector('.action-buttons').classList.add('hidden');
+        routesContainer.classList.add('hidden');
+        mapContainer.classList.add('hidden');
         driverLoginContainer.classList.remove('hidden');
+        adminLoginContainer.classList.add('hidden');
     }
 
     function showAdminLogin() {
-        hideAllViews();
-        adminLoginContainer.classList.remove('hidden');
-    }
-
-    function hideMap() {
-        mapContainer.classList.add('hidden');
-        showHome();
-    }
-
-    function hideRoutes() {
-        routesContainer.classList.add('hidden');
-        showHome();
-    }
-
-    function hideTimetable() {
-        timetableContainer.classList.add('hidden');
-        showRoutes();
-    }
-
-    function hideDriverLogin() {
-        driverLoginContainer.classList.add('hidden');
-        showHome();
-    }
-
-    function hideAdminLogin() {
-        adminLoginContainer.classList.add('hidden');
-        showHome();
-    }
-
-    function hideAllViews() {
         document.querySelector('.action-buttons').classList.add('hidden');
-        driverLoginContainer.classList.add('hidden');
-        adminLoginContainer.classList.add('hidden');
-        mapContainer.classList.add('hidden');
         routesContainer.classList.add('hidden');
-        timetableContainer.classList.add('hidden');
-    }
-
-    function showHome() {
-        hideAllViews();
-        document.querySelector('.action-buttons').classList.remove('hidden');
+        mapContainer.classList.add('hidden');
+        driverLoginContainer.classList.add('hidden');
+        adminLoginContainer.classList.remove('hidden');
     }
 
     // Authentication Functions
@@ -187,8 +127,13 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        if (validCredentials.drivers[driverId] && validCredentials.drivers[driverId] === driverPin) {
-            sessionStorage.setItem('currentDriver', driverId);
+        if (validCredentials.drivers[driverId] && validCredentials.drivers[driverId].pin === driverPin) {
+            // Store driver info in session
+            sessionStorage.setItem('driverId', driverId);
+            sessionStorage.setItem('driverRoute', validCredentials.drivers[driverId].route);
+            sessionStorage.setItem('driverBus', validCredentials.drivers[driverId].bus);
+            
+            // Redirect to driver dashboard
             window.location.href = 'driver.html';
         } else {
             showError('Invalid Driver ID or PIN', 'driver');
@@ -210,7 +155,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (username === validCredentials.admin.username && 
             password === validCredentials.admin.password) {
+            // Store admin login state
             sessionStorage.setItem('adminLoggedIn', 'true');
+            
+            // Redirect to admin dashboard
             window.location.href = 'admin.html';
         } else {
             showError('Invalid username or password', 'admin');
