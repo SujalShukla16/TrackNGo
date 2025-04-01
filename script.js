@@ -193,3 +193,83 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 3000);
   }
 });
+// Add this with other DOM element declarations
+const timetableContainer = document.getElementById('timetableContainer');
+const timetableList = document.getElementById('timetableList');
+const timetableRouteName = document.getElementById('timetableRouteName');
+const backFromTimetable = document.getElementById('backFromTimetable');
+
+// Add this event listener with others
+backFromTimetable.addEventListener('click', hideTimetable);
+
+// Sample timetable data (in real app, this would come from API)
+const routeTimetables = {
+    'Route 1: Downtown Loop': [
+        { busNumber: 'B-101', departure: '06:00 AM', arrival: '07:20 AM' },
+        { busNumber: 'B-102', departure: '06:20 AM', arrival: '07:40 AM' },
+        { busNumber: 'B-103', departure: '06:40 AM', arrival: '08:00 AM' },
+        { busNumber: 'B-104', departure: '07:00 AM', arrival: '08:20 AM' },
+        { busNumber: 'B-105', departure: '07:20 AM', arrival: '08:40 AM' },
+        { busNumber: 'B-106', departure: '04:00 PM', arrival: '05:20 PM' },
+        { busNumber: 'B-107', departure: '04:20 PM', arrival: '05:40 PM' },
+        { busNumber: 'B-108', departure: '04:40 PM', arrival: '06:00 PM' }
+    ],
+    'Route 2: University Express': [
+        { busNumber: 'B-201', departure: '06:15 AM', arrival: '07:00 AM' },
+        { busNumber: 'B-202', departure: '07:15 AM', arrival: '08:00 AM' },
+        { busNumber: 'B-203', departure: '08:15 AM', arrival: '09:00 AM' },
+        { busNumber: 'B-204', departure: '03:15 PM', arrival: '04:00 PM' },
+        { busNumber: 'B-205', departure: '04:15 PM', arrival: '05:00 PM' },
+        { busNumber: 'B-206', departure: '05:15 PM', arrival: '06:00 PM' }
+    ],
+    'Route 3: Suburban Connector': [
+        { busNumber: 'B-301', departure: '05:30 AM', arrival: '06:30 AM' },
+        { busNumber: 'B-302', departure: '06:30 AM', arrival: '07:30 AM' },
+        { busNumber: 'B-303', departure: '07:30 AM', arrival: '08:30 AM' },
+        { busNumber: 'B-304', departure: '04:30 PM', arrival: '05:30 PM' },
+        { busNumber: 'B-305', departure: '05:30 PM', arrival: '06:30 PM' }
+    ]
+};
+
+// Add this after the route-list creation in showRoutes()
+function showRoutes() {
+    document.querySelector('.action-buttons').classList.add('hidden');
+    routesContainer.classList.remove('hidden');
+    
+    // Make route items clickable
+    const routeItems = document.querySelectorAll('.route-item');
+    routeItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const routeName = this.querySelector('h3').textContent;
+            showTimetable(routeName);
+        });
+    });
+}
+
+// Show timetable for a specific route
+function showTimetable(routeName) {
+    routesContainer.classList.add('hidden');
+    timetableContainer.classList.remove('hidden');
+    timetableRouteName.textContent = routeName;
+    
+    // Clear previous timetable
+    timetableList.innerHTML = '';
+    
+    // Add timetable items
+    routeTimetables[routeName].forEach(trip => {
+        const timetableItem = document.createElement('div');
+        timetableItem.className = 'timetable-item';
+        timetableItem.innerHTML = `
+            <span class="bus-number">${trip.busNumber}</span>
+            <span class="time">${trip.departure}</span>
+            <span class="time">${trip.arrival}</span>
+        `;
+        timetableList.appendChild(timetableItem);
+    });
+}
+
+// Hide timetable view
+function hideTimetable() {
+    timetableContainer.classList.add('hidden');
+    routesContainer.classList.remove('hidden');
+}
