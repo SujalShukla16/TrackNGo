@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="icon" href="images/Logo.png" type="image/png">
 </head>
-
 <body>
     <div class="container">
         <header>
@@ -26,7 +24,7 @@
                     <i class="fas fa-id-badge"></i>
                     <div>
                         <h3>Driver ID</h3>
-                        <p id="driverIdDisplay">DRIVER-XXX</p>
+                        <p id="driverIdDisplay">DRV-XXXX</p>
                     </div>
                 </div>
                 <div class="info-card">
@@ -75,10 +73,10 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             // Get driver ID from session
             const driverId = sessionStorage.getItem('currentDriver');
-
+            
             if (!driverId) {
                 alert('Please login first');
                 window.location.href = 'index.html';
@@ -87,15 +85,15 @@
 
             // Display driver info
             document.getElementById('driverIdDisplay').textContent = driverId;
-
+            
             // Assign bus based on driver ID (demo logic)
             const busAssignments = {
-                'DRIVER-101': 'B-101 (Route 1: Mohopada to Panvel)',
-                'DRIVER-102': 'B-202 (Route 2: Khopoli to Panvel)',
-                'DRIVER-103': 'B-303 (Route 3: Khopoli to Rasayani)'
+                'DRV-1001': 'B-101 (Route 1: Mohopada to Panvel)',
+                'DRV-1002': 'B-202 (Route 2: Khopoli to Panvel)',
+                'DRV-1003': 'B-303 (Route 3: Khopoli to Rasayani)'
             };
-
-            document.getElementById('assignedBus').textContent =
+            
+            document.getElementById('assignedBus').textContent = 
                 busAssignments[driverId] || 'Not assigned';
 
             // Button functionality
@@ -103,8 +101,8 @@
             const endShiftBtn = document.getElementById('endShiftBtn');
             const logoutBtn = document.getElementById('driverLogoutBtn');
             const statusDisplay = document.getElementById('driverStatus');
-
-            startShiftBtn.addEventListener('click', function () {
+            
+            startShiftBtn.addEventListener('click', function() {
                 if (confirm('Are you ready to start your shift?')) {
                     startShiftBtn.disabled = true;
                     endShiftBtn.disabled = false;
@@ -112,8 +110,8 @@
                     alert('Shift started! Your location is now being tracked.');
                 }
             });
-
-            endShiftBtn.addEventListener('click', function () {
+            
+            endShiftBtn.addEventListener('click', function() {
                 if (confirm('Are you sure you want to end your shift?')) {
                     startShiftBtn.disabled = false;
                     endShiftBtn.disabled = true;
@@ -121,8 +119,8 @@
                     alert('Shift ended successfully!');
                 }
             });
-
-            logoutBtn.addEventListener('click', function () {
+            
+            logoutBtn.addEventListener('click', function() {
                 if (confirm('Are you sure you want to logout?')) {
                     sessionStorage.removeItem('currentDriver');
                     window.location.href = 'index.html';
@@ -130,18 +128,8 @@
             });
 
             // Demo functionality for other buttons
-            document.getElementById('reportIssueBtn').addEventListener('click', function () {
+            document.getElementById('reportIssueBtn').addEventListener('click', function() {
                 const issue = prompt('Please describe the issue:');
                 if (issue) {
                     alert(`Issue reported: "${issue}". Maintenance team has been notified.`);
                 }
-            });
-
-            document.getElementById('viewScheduleBtn').addEventListener('click', function () {
-                alert('This would show your weekly schedule');
-            });
-        });
-    </script>
-</body>
-
-</html>
