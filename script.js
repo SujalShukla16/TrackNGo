@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Sample timetable data
     const routeTimetables = {
-        'Route 1: Downtown Loop': [
+        'Route 1: Mohopada to Panvel': [
             { busNumber: 'B-101', departure: '06:00 AM', arrival: '07:20 AM' },
             { busNumber: 'B-102', departure: '06:20 AM', arrival: '07:40 AM' },
             { busNumber: 'B-103', departure: '06:40 AM', arrival: '08:00 AM' },
