@@ -6,9 +6,9 @@ document.addEventListener('DOMContentLoaded', function() {
             password: "admin123"
         },
         drivers: {
-            "DRV-1001": { pin: "7890", route: "Route 1: Downtown Loop", bus: "B-101" },
-            "DRV-1002": { pin: "4567", route: "Route 2: University Express", bus: "B-202" },
-            "DRV-1003": { pin: "1234", route: "Route 3: Suburban Connector", bus: "B-303" }
+            "DRV-1001": { pin: "1111", route: "Route 1: Downtown Loop", bus: "B-101" },
+            "DRV-1002": { pin: "2222", route: "Route 2: University Express", bus: "B-202" },
+            "DRV-1003": { pin: "3333", route: "Route 3: Suburban Connector", bus: "B-303" }
         }
     };
 
