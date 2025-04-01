@@ -6,13 +6,13 @@
     <title>TRACK N GO - Bus Tracker</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="icon" href="images/logo.png" type="image/png">
+    <link rel="icon" href="bus-icon.png" type="image/png">
 </head>
 <body>
     <div class="container">
         <header>
             <div class="logo">
-                <img src="images/logo.png" alt="Bus Icon">
+                <img src="bus-icon.png" alt="Bus Icon">
                 <h1>TRACK N GO</h1>
             </div>
             <p>Real-time bus tracking system</p>
@@ -20,8 +20,8 @@
 
         <main>
             <div class="action-buttons">
-                <button class="action-btn" id="viewRoutesBtn">
-                    <i class="fas fa-route"></i>
+                <button class="action-btn" id="trackBusBtn">
+                    <i class="fas fa-bus"></i>
                     <span>Track Bus</span>
                 </button>
                 <button class="action-btn" id="driverBtn">
@@ -34,14 +34,45 @@
                 </button>
             </div>
 
+            <!-- Track Bus View -->
+            <div class="routes-container hidden" id="routesContainer">
+                <h2>Available Routes</h2>
+                <div class="route-list">
+                    <div class="route-item" data-route="1">
+                        <h3>Route 1: Downtown Loop</h3>
+                        <p>Stops: 15 | Frequency: 20 mins</p>
+                    </div>
+                    <div class="route-item" data-route="2">
+                        <h3>Route 2: University Express</h3>
+                        <p>Stops: 8 | Frequency: 15 mins</p>
+                    </div>
+                    <div class="route-item" data-route="3">
+                        <h3>Route 3: Suburban Connector</h3>
+                        <p>Stops: 12 | Frequency: 30 mins</p>
+                    </div>
+                </div>
+                <button class="back-btn" id="backFromRoutes">Back to Home</button>
+            </div>
+
+            <!-- Map View -->
+            <div class="map-container hidden" id="mapContainer">
+                <h2 id="mapRouteName">Route Map</h2>
+                <div class="map-placeholder">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <p id="mapDescription">Map view will be displayed here</p>
+                </div>
+                <button class="back-btn" id="backFromMap">Back to Routes</button>
+            </div>
+
+            <!-- Driver Login -->
             <div class="login-container hidden" id="driverLoginContainer">
                 <div class="login-header">
-                    <h2>Driver Login <span class="role-indicator driver-indicator">Driver</span></h2>
+                    <h2>Driver Login</h2>
                 </div>
                 <form id="driverLoginForm" class="login-form">
                     <div class="form-group">
                         <label for="driverId"><i class="fas fa-id-badge"></i> Driver ID</label>
-                        <input type="text" id="driverId" name="driverId" required placeholder="DRIVER-XXX">
+                        <input type="text" id="driverId" name="driverId" required placeholder="DRV-1001">
                     </div>
                     <div class="form-group">
                         <label for="driverPin"><i class="fas fa-lock"></i> PIN</label>
@@ -52,60 +83,23 @@
                 </form>
             </div>
 
+            <!-- Admin Login -->
             <div class="login-container hidden" id="adminLoginContainer">
                 <div class="login-header">
-                    <h2>Admin Login <span class="role-indicator admin-indicator">Admin</span></h2>
+                    <h2>Admin Login</h2>
                 </div>
                 <form id="adminLoginForm" class="login-form">
                     <div class="form-group">
                         <label for="adminUsername"><i class="fas fa-user"></i> Username</label>
-                        <input type="text" id="adminUsername" name="adminUsername" required placeholder="name">
+                        <input type="text" id="adminUsername" name="adminUsername" required placeholder="admin">
                     </div>
                     <div class="form-group">
                         <label for="adminPassword"><i class="fas fa-lock"></i> Password</label>
-                        <input type="password" id="adminPassword" name="adminPassword" required placeholder="password">
+                        <input type="password" id="adminPassword" name="adminPassword" required placeholder="admin123">
                     </div>
                     <button type="submit" class="login-btn">Login</button>
                     <button type="button" class="cancel-btn" id="cancelAdminLogin">Cancel</button>
                 </form>
-            </div>
-            <div class="routes-container hidden" id="routesContainer">
-                <h2>Available Routes</h2>
-                <div class="route-list">
-                    <div class="route-item">
-                        <h3>Route 1: Mohopada to Panvel</h3>
-                        <p>Stops: 15 | Frequency: 20 mins</p>
-                    </div>
-                    <div class="route-item">
-                        <h3>Route 2: Khopoli to Panvel</h3>
-                        <p>Stops: 8 | Frequency: 15 mins</p>
-                    </div>
-                    <div class="route-item">
-                        <h3>Route 3: Khopoli to Rasayani</h3>
-                        <p>Stops: 12 | Frequency: 30 mins</p>
-                    </div>
-                </div>
-                <button class="back-btn" id="backFromRoutes">Back to Home</button>
-            </div>
-            <div class="map-container hidden" id="mapContainer">
-                <h2>Live Bus Tracking</h2>
-                <div class="map-placeholder">
-                    <i class="fas fa-map-marked-alt"></i>
-                    <p>Map view would be displayed here</p>
-                </div>
-                <button class="back-btn" id="backFromMap">Back to Home</button>
-            </div>
-            <div class="timetable-container hidden" id="timetableContainer">
-                <h2 id="timetableRouteName">Route Timetable</h2>
-                <div class="timetable-header">
-                    <span>Bus Number</span>
-                    <span>Departure Time</span>
-                    <span>Arrival Time</span>
-                </div>
-                <div class="timetable-list" id="timetableList">
-                    <!-- Timetable items will be inserted here by JavaScript -->
-                </div>
-                <button class="back-btn" id="backFromTimetable">Back to Routes</button>
             </div>
         </main>
 
