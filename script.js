@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
             { busNumber: 'B-107', departure: '04:20 PM', arrival: '05:40 PM' },
             { busNumber: 'B-108', departure: '04:40 PM', arrival: '06:00 PM' }
         ],
-        'Route 2: University Express': [
+        'Route 2: Khopoli to Panvel': [
             { busNumber: 'B-201', departure: '06:15 AM', arrival: '07:00 AM' },
             { busNumber: 'B-202', departure: '07:15 AM', arrival: '08:00 AM' },
             { busNumber: 'B-203', departure: '08:15 AM', arrival: '09:00 AM' },
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
             { busNumber: 'B-205', departure: '04:15 PM', arrival: '05:00 PM' },
             { busNumber: 'B-206', departure: '05:15 PM', arrival: '06:00 PM' }
         ],
-        'Route 3: Suburban Connector': [
+        'Route 3: Khopoli to Rasayani': [
             { busNumber: 'B-301', departure: '05:30 AM', arrival: '06:30 AM' },
             { busNumber: 'B-302', departure: '06:30 AM', arrival: '07:30 AM' },
             { busNumber: 'B-303', departure: '07:30 AM', arrival: '08:30 AM' },
