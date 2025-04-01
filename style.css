@@ -213,16 +213,17 @@ header p {
     to { opacity: 1; transform: translateY(0); }
 }
 
-.map-container, .routes-container {
+.map-container, .routes-container, .timetable-container {
     background: white;
     border-radius: 10px;
     padding: 25px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     margin: 20px auto;
     width: 100%;
+    max-width: 500px;
 }
 
-.map-container h2, .routes-container h2 {
+.map-container h2, .routes-container h2, .timetable-container h2 {
     color: #2c3e50;
     margin-bottom: 20px;
     text-align: center;
@@ -257,6 +258,13 @@ header p {
     padding: 15px;
     border-radius: 8px;
     border-left: 4px solid #3498db;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.route-item:hover {
+    transform: translateX(5px);
+    background: #f1f8fe;
 }
 
 .route-item h3 {
@@ -267,6 +275,45 @@ header p {
 .route-item p {
     color: #7f8c8d;
     font-size: 14px;
+}
+
+.timetable-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    font-weight: bold;
+    padding: 10px 0;
+    border-bottom: 2px solid #3498db;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.timetable-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.timetable-item {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+    align-items: center;
+}
+
+.timetable-item:nth-child(odd) {
+    background-color: #f8f9fa;
+}
+
+.timetable-item .bus-number {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.timetable-item .time {
+    color: #3498db;
+    font-weight: 500;
 }
 
 .back-btn {
@@ -414,7 +461,7 @@ footer {
         padding: 15px;
     }
     
-    .login-container, .map-container, .routes-container {
+    .login-container, .map-container, .routes-container, .timetable-container {
         padding: 20px;
     }
     
@@ -435,58 +482,9 @@ footer {
         font-size: 12px;
         padding: 8px;
     }
-}
-/* Timetable Styles */
-.timetable-container {
-    background: white;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    margin: 20px auto;
-    width: 100%;
-    max-width: 500px;
-}
-
-.timetable-header {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    font-weight: bold;
-    padding: 10px 0;
-    border-bottom: 2px solid #3498db;
-    margin-bottom: 10px;
-    text-align: center;
-}
-
-.timetable-item {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    padding: 12px 0;
-    border-bottom: 1px solid #eee;
-    text-align: center;
-    align-items: center;
-}
-
-.timetable-item:nth-child(odd) {
-    background-color: #f8f9fa;
-}
-
-.timetable-item .bus-number {
-    font-weight: bold;
-    color: #2c3e50;
-}
-
-.timetable-item .time {
-    color: #3498db;
-    font-weight: 500;
-}
-
-/* Route item clickable style */
-.route-item {
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-
-.route-item:hover {
-    transform: translateX(5px);
-    background: #f1f8fe;
+    
+    .timetable-header, .timetable-item {
+        grid-template-columns: 1.2fr 1fr 1fr;
+        font-size: 14px;
+    }
 }
