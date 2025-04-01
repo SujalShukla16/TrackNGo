@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     // DOM Elements
-    const trackBusBtn = document.getElementById('trackBusBtn');
+
     const viewRoutesBtn = document.getElementById('viewRoutesBtn');
     const driverBtn = document.getElementById('driverBtn');
     const adminBtn = document.getElementById('adminBtn');
@@ -67,7 +67,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const timetableRouteName = document.getElementById('timetableRouteName');
 
     // Event Listeners
-    trackBusBtn.addEventListener('click', showMap);
     viewRoutesBtn.addEventListener('click', showRoutes);
     driverBtn.addEventListener('click', showDriverLogin);
     adminBtn.addEventListener('click', showAdminLogin);
