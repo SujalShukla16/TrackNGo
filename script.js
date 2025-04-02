@@ -364,4 +364,4 @@ function initMap() {
             showMap(routeName);
         }
     });
-});
+);
