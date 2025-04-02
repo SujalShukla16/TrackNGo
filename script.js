@@ -6,9 +6,9 @@ document.addEventListener('DOMContentLoaded', function() {
             password: "admin123"
         },
         drivers: {
-            "DRV-1001": { pin: "7890", route: "Route 1: Downtown Loop", bus: "B-101" },
-            "DRV-1002": { pin: "4567", route: "Route 2: University Express", bus: "B-202" },
-            "DRV-1003": { pin: "1234", route: "Route 3: Suburban Connector", bus: "B-303" }
+            "DRV-1001": { pin: "1111", route: "Route 1: Downtown Loop", bus: "B-101" },
+            "DRV-1002": { pin: "2222", route: "Route 2: University Express", bus: "B-202" },
+            "DRV-1003": { pin: "3333", route: "Route 3: Suburban Connector", bus: "B-303" }
         }
     };
 
@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Map variables
     let map;
     let routingControl;
+    let isMapInitialized = false;
 
     // Event Listeners
     trackBusBtn.addEventListener('click', showRoutes);
@@ -88,33 +89,31 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 // Update the showMap function
-function showMap(routeName) {
-    hideAllViews();
-    mapContainer.classList.remove('hidden');
-    mapRouteName.textContent = routeName;
+    function showMap(routeName) {
+        hideAllViews();
+        mapContainer.classList.remove('hidden');
+        mapRouteName.textContent = routeName;
 
-    // Show loading state
-    const mapElement = document.getElementById('map');
-    mapElement.innerHTML = '<div class="map-loading"><i class="fas fa-spinner fa-spin"></i><p>Loading map...</p></div>';
+        // Show loading state
+        const mapElement = document.getElementById('map');
+        mapElement.innerHTML = '<div class="map-loading"><i class="fas fa-spinner fa-spin"></i><p>Loading map...</p></div>';
 
-    // Initialize map after a slight delay to allow DOM update
-    setTimeout(() => {
-        if (!map) {
-            initMap();
-        } else {
-            // If map exists, remove it to recreate
-            map.remove();
-            map = null;
-            initMap();
-        }
+        // Initialize map after slight delay
+        setTimeout(() => {
+            if (!isMapInitialized) {
+                initMap();
+                isMapInitialized = true;
+            } else {
+                // If map exists, invalidate size to fix display issues
+                map.invalidateSize();
+            }
 
-        // Set the appropriate route
-        if (routeName === "Route 1: Downtown Loop") {
-            setRoute1();
-        }
-        // Add else-if blocks for other routes when implemented
-    }, 50);
-}
+            // Set the appropriate route
+            if (routeName === "Route 1: Downtown Loop") {
+                setRoute1();
+            }
+        }, 100);
+    }
 
     function showDriverLogin() {
         hideAllViews();
@@ -140,41 +139,114 @@ function showMap(routeName) {
         reportIssueContainer.classList.add('hidden');
     }
 
+    function setRoute1() {
+        if (!map) {
+            console.error("Map not initialized!");
+            return;
+        }
+
+        // Clear existing route if any
+        if (routingControl) {
+            map.removeControl(routingControl);
+        }
+
+        // Define route coordinates
+        const route1 = {
+            waypoints: [
+                L.latLng(18.8943, 73.1768), // Start point (PHOCC)
+                L.latLng(18.9000, 73.1900), // Stop 1
+                L.latLng(18.9030, 73.2000), // Stop 2
+                L.latLng(18.9061, 73.2089)  // End point (Dand Fata)
+            ]
+        };
+
+        // Clear existing markers
+        map.eachLayer(layer => {
+            if (layer instanceof L.Marker) {
+                map.removeLayer(layer);
+            }
+        });
+
+        // Custom stop icon
+        const stopIcon = L.divIcon({
+            className: 'stop-icon',
+            html: '<div style="width: 12px; height: 12px; background: white; border: 2px solid black; border-radius: 50%;"></div>',
+            iconSize: [14, 14],
+            iconAnchor: [7, 7]
+        });
+
+        // Add stops
+        const stops = [
+            { lat: 18.9000, lon: 73.1900, name: "Stop 1" },
+            { lat: 18.9030, lon: 73.2000, name: "Stop 2" }
+        ];
+
+        stops.forEach(stop => {
+            L.marker([stop.lat, stop.lon], { icon: stopIcon })
+                .addTo(map)
+                .bindTooltip(stop.name, { permanent: true, direction: "top" });
+        });
+
+        // Initialize routing control
+        routingControl = L.Routing.control({
+            waypoints: route1.waypoints,
+            routeWhileDragging: false,
+            router: L.Routing.osrmv1({
+                serviceUrl: 'https://router.project-osrm.org/route/v1'
+            }),
+            lineOptions: {
+                styles: [{ color: 'blue', opacity: 0.7, weight: 5 }]
+            },
+            createMarker: function(i, waypoint, n) {
+                if (i === 0 || i === n - 1) {
+                    return L.marker(waypoint.latLng, {
+                        icon: L.divIcon({
+                            className: 'text-cloud',
+                            html: `<div class="text-cloud">${i === 0 ? 'PHOCC' : 'Dand Fata'}</div>`
+                        })
+                    });
+                }
+                return null;
+            }
+        }).addTo(map);
+
+        routingControl.on('routesfound', function(e) {
+            // Hide the routing instructions panel
+            const itineraryPanel = document.querySelector('.leaflet-routing-container');
+            if (itineraryPanel) {
+                itineraryPanel.style.display = 'none';
+            }
+            
+            // Fit the map to show the entire route
+            map.fitBounds(e.routes[0].bounds);
+        });
+
+        // Error handling for route loading
+        routingControl.on('routingerror', function(err) {
+            console.error('Routing error:', err);
+            alert('Failed to load route. Please try again later.');
+        });
+    }
+    
+
 // Update the initMap function
 function initMap() {
-    const mapElement = document.getElementById('map');
-    mapElement.innerHTML = ''; // Clear loading message
-    
-    map = L.map('map').setView([18.8943, 73.1768], 13);
+        const mapElement = document.getElementById('map');
+        mapElement.innerHTML = ''; // Clear loading message
+        
+        map = L.map('map').setView([18.8943, 73.1768], 13);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
 
-    // Add a slight zoom animation
-    setTimeout(() => {
-        map.invalidateSize();
-    }, 100);
-}
+        // Add slight delay to ensure tiles load
+        setTimeout(() => {
+            map.invalidateSize();
+        }, 200);
+    }
 
-// Update the initMap function
-function initMap() {
-    const mapElement = document.getElementById('map');
-    mapElement.innerHTML = ''; // Clear loading message
-    
-    map = L.map('map').setView([18.8943, 73.1768], 13);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-
-    // Add a slight zoom animation
-    setTimeout(() => {
-        map.invalidateSize();
-    }, 100);
-}
     // Authentication Functions
     function handleDriverLogin(e) {
         e.preventDefault();
