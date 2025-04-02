@@ -139,97 +139,95 @@ document.addEventListener('DOMContentLoaded', function() {
         reportIssueContainer.classList.add('hidden');
     }
 
-    function setRoute1() {
-        if (!map) {
-            console.error("Map not initialized!");
-            return;
+let routingControl = null; // Declare globally
+
+function setRoute1() {
+    if (!map) {
+        console.error("Map not initialized!");
+        return;
+    }
+
+    // Clear existing route if any
+    if (routingControl) {
+        map.removeControl(routingControl);
+        routingControl = null; // Reset to avoid undefined reference error
+    }
+
+    // Define route coordinates
+    const Route1 = {
+        waypoints: [
+            L.latLng(18.8943, 73.1768), // Start point (PHOCC)
+            L.latLng(18.9000, 73.1900), // Stop 1
+            L.latLng(18.9030, 73.2000), // Stop 2
+            L.latLng(18.9061, 73.2089)  // End point (Dand Fata)
+        ]
+    };
+
+    // Clear existing markers
+    map.eachLayer(layer => {
+        if (layer instanceof L.Marker) {
+            map.removeLayer(layer);
+        }
+    });
+
+    // Custom stop icon
+    const stopIcon = L.divIcon({
+        className: 'stop-icon',
+        html: '<div style="width: 12px; height: 12px; background: white; border: 2px solid black; border-radius: 50%;"></div>',
+        iconSize: [14, 14],
+        iconAnchor: [7, 7]
+    });
+
+    // Add stops
+    const stops = [
+        { lat: 18.9000, lon: 73.1900, name: "Stop 1" },
+        { lat: 18.9030, lon: 73.2000, name: "Stop 2" }
+    ];
+
+    stops.forEach(stop => {
+        L.marker([stop.lat, stop.lon], { icon: stopIcon })
+            .addTo(map)
+            .bindTooltip(stop.name, { permanent: true, direction: "top" });
+    });
+
+    // Initialize routing control
+    routingControl = L.Routing.control({
+        waypoints: Route1.waypoints, // Fixed variable name
+        routeWhileDragging: false,
+        router: L.Routing.osrmv1({
+            serviceUrl: 'https://router.project-osrm.org/route/v1'
+        }),
+        lineOptions: {
+            styles: [{ color: 'blue', opacity: 0.7, weight: 5 }]
+        },
+        createMarker: function(i, waypoint, n) {
+            return L.marker(waypoint.latLng)
+                .bindPopup(i === 0 ? 'PHOCC (Start)' : i === n - 1 ? 'Dand Fata (End)' : `Stop ${i}`)
+                .openPopup(); // Ensures marker visibility
+        }
+    }).addTo(map);
+
+    routingControl.on('routesfound', function(e) {
+        // Hide the routing instructions panel
+        const itineraryPanel = document.querySelector('.leaflet-routing-container');
+        if (itineraryPanel) {
+            itineraryPanel.style.display = 'none';
         }
 
-        // Clear existing route if any
-// Clear existing route if any
-if (routingControl) {
-    map.removeControl(routingControl);
-    routingControl = null; // Reset the variable to avoid undefined reference error
+        // Fit the map to show the entire route
+        map.fitBounds(e.routes[0].bounds);
+    });
+
+    // Error handling for route loading
+    routingControl.on('routingerror', function(err) {
+        console.error('Routing error:', err);
+        alert('Failed to load route. Please try again later.');
+    });
 }
 
-        // Define route coordinates
-        const Route1 = {
-            waypoints: [
-                L.latLng(18.8943, 73.1768), // Start point (PHOCC)
-                L.latLng(18.9000, 73.1900), // Stop 1
-                L.latLng(18.9030, 73.2000), // Stop 2
-                L.latLng(18.9061, 73.2089)  // End point (Dand Fata)
-            ]
-        };
-
-        // Clear existing markers
-        map.eachLayer(layer => {
-            if (layer instanceof L.Marker) {
-                map.removeLayer(layer);
-            }
-        });
-
-        // Custom stop icon
-        const stopIcon = L.divIcon({
-            className: 'stop-icon',
-            html: '<div style="width: 12px; height: 12px; background: white; border: 2px solid black; border-radius: 50%;"></div>',
-            iconSize: [14, 14],
-            iconAnchor: [7, 7]
-        });
-
-        // Add stops
-        const stops = [
-            { lat: 18.9000, lon: 73.1900, name: "Stop 1" },
-            { lat: 18.9030, lon: 73.2000, name: "Stop 2" }
-        ];
-
-        stops.forEach(stop => {
-            L.marker([stop.lat, stop.lon], { icon: stopIcon })
-                .addTo(map)
-                .bindTooltip(stop.name, { permanent: true, direction: "top" });
-        });
-
-        // Initialize routing control
-        routingControl = L.Routing.control({
-            waypoints: route1.waypoints,
-            routeWhileDragging: false,
-            router: L.Routing.osrmv1({
-                serviceUrl: 'https://router.project-osrm.org/route/v1'
-            }),
-            lineOptions: {
-                styles: [{ color: 'blue', opacity: 0.7, weight: 5 }]
-            },
-            createMarker: function(i, waypoint, n) {
-                if (i === 0 || i === n - 1) {
-                    return L.marker(waypoint.latLng, {
-                        icon: L.divIcon({
-                            className: 'text-cloud',
-                            html: `<div class="text-cloud">${i === 0 ? 'PHOCC' : 'Dand Fata'}</div>`
-                        })
-                    });
-                }
-                return null;
-            }
-        }).addTo(map);
-
-        routingControl.on('routesfound', function(e) {
-            // Hide the routing instructions panel
-            const itineraryPanel = document.querySelector('.leaflet-routing-container');
-            if (itineraryPanel) {
-                itineraryPanel.style.display = 'none';
-            }
-            
-            // Fit the map to show the entire route
-            map.fitBounds(e.routes[0].bounds);
-        });
-
-        // Error handling for route loading
-        routingControl.on('routingerror', function(err) {
-            console.error('Routing error:', err);
-            alert('Failed to load route. Please try again later.');
-        });
-    }
-    
+// Ensure function runs only after the map is ready
+map.on('load', setRoute1);
+ 
 
 // Update the initMap function
 function initMap() {
