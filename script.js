@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Define route coordinates
-        const route1 = {
+        const Route1 = {
             waypoints: [
                 L.latLng(18.8943, 73.1768), // Start point (PHOCC)
                 L.latLng(18.9000, 73.1900), // Stop 1
