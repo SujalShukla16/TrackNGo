@@ -14,15 +14,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Route information
     const routeInfo = {
-        "Route 1: Downtown Loop": {
+        "Route 1: Mohopada to Panvel": {
             description: "Stops: 15 | Frequency: 20 mins",
             mapInfo: "Description for route 1"
         },
-        "Route 2: University Express": {
+        "Route 2: Khopoli to Panvel": {
             description: "Stops: 8 | Frequency: 15 mins",
             mapInfo: "Description for route 2"
         },
-        "Route 3: Suburban Connector": {
+        "Route 3: Khopoli to rasayni": {
             description: "Stops: 12 | Frequency: 30 mins",
             mapInfo: "Description for route 3"
         }
