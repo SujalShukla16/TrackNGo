@@ -143,6 +143,8 @@ let routingControl = null; // Declare globally
 
 let routingControl = null; // Declare globally
 
+let routingControl = null; // Declare globally
+
 function setRoute1() {
     if (!map) {
         console.error("Map not initialized!");
@@ -192,9 +194,15 @@ function setRoute1() {
             .bindTooltip(stop.name, { permanent: true, direction: "top" });
     });
 
+    // Check if L.Routing exists before initializing
+    if (!L.Routing || !L.Routing.control) {
+        console.error("Leaflet Routing Machine is not loaded. Please check your script imports.");
+        return;
+    }
+
     // Initialize routing control
     routingControl = L.Routing.control({
-        waypoints: Route1.waypoints, // Fixed reference
+        waypoints: Route1.waypoints, // Ensure this is correct
         routeWhileDragging: false,
         router: L.Routing.osrmv1({
             serviceUrl: 'https://router.project-osrm.org/route/v1'
@@ -212,13 +220,8 @@ function setRoute1() {
         }
     }).addTo(map);
 
-    // Log routing errors
-    routingControl.on('routingerror', function(err) {
-        console.error('Routing error:', err);
-        alert('Failed to load route. Please check your internet connection or try again later.');
-    });
+    console.log("Routing request sent..."); // This should not error if everything works
 
-    // Ensure routing loads before fitting bounds
     routingControl.on('routesfound', function(e) {
         console.log("Route found!", e.routes);
         if (e.routes.length > 0) {
@@ -226,11 +229,15 @@ function setRoute1() {
         }
     });
 
-    console.log("Routing request sent...");
+    // Log routing errors
+    routingControl.on('routingerror', function(err) {
+        console.error('Routing error:', err);
+        alert('Failed to load route. Please check your internet connection or try again later.');
+    });
 }
 
-// Ensure function runs after the map is ready
-setTimeout(setRoute1, 1000); // Added a slight delay to ensure map loads
+// Run function after map loads
+setTimeout(setRoute1, 1000);
 
  
 
