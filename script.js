@@ -48,6 +48,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const mapRouteName = document.getElementById('mapRouteName');
     const mapDescription = document.getElementById('mapDescription');
+    const reportIssueBtn = document.getElementById('reportIssueBtn');
+    const reportIssueContainer = document.getElementById('reportIssueContainer');
+    const cancelReportIssue = document.getElementById('cancelReportIssue');
+    const reportIssueForm = document.getElementById('reportIssueForm');
 
     // Event Listeners
     trackBusBtn.addEventListener('click', showRoutes);
@@ -61,6 +65,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     driverLoginForm.addEventListener('submit', handleDriverLogin);
     adminLoginForm.addEventListener('submit', handleAdminLogin);
+    reportIssueBtn.addEventListener('click', showReportIssue);
+    cancelReportIssue.addEventListener('click', hideReportIssue);
+    reportIssueForm.addEventListener('submit', handleReportIssue);
 
     // Make route items clickable
     document.addEventListener('click', function(e) {
@@ -114,6 +121,49 @@ document.addEventListener('DOMContentLoaded', function() {
         driverLoginContainer.classList.add('hidden');
         adminLoginContainer.classList.remove('hidden');
     }
+    function showReportIssue() {
+    hideAllViews();
+    reportIssueContainer.classList.remove('hidden');
+}
+
+function hideReportIssue() {
+    reportIssueContainer.classList.add('hidden');
+    showHome();
+}
+    function hideAllViews() {
+    document.querySelector('.action-buttons').classList.add('hidden');
+    routesContainer.classList.add('hidden');
+    mapContainer.classList.add('hidden');
+    driverLoginContainer.classList.add('hidden');
+    adminLoginContainer.classList.add('hidden');
+    reportIssueContainer.classList.add('hidden');
+}
+    // New issue reporting handler
+function handleReportIssue(e) {
+    e.preventDefault();
+    
+    const issueType = document.getElementById('issueType').value;
+    const issueRoute = document.getElementById('issueRoute').value;
+    const issueBus = document.getElementById('issueBus').value;
+    const issueDescription = document.getElementById('issueDescription').value;
+    
+    if (!issueType || !issueDescription) {
+        showError('Please select issue type and provide description', 'report');
+        return;
+    }
+    
+    // In a real app, this would send to server
+    console.log('Issue reported:', {
+        type: issueType,
+        route: issueRoute,
+        bus: issueBus,
+        description: issueDescription
+    });
+    
+    alert('Thank you for your report! We will address this issue promptly.');
+    reportIssueForm.reset();
+    hideReportIssue();
+}
 
     // Authentication Functions
     function handleDriverLogin(e) {
@@ -166,6 +216,26 @@ document.addEventListener('DOMContentLoaded', function() {
         
         adminLoginForm.reset();
     }
+function showError(message, formType) {
+    const errorElement = document.createElement('div');
+    errorElement.className = 'error-message';
+    errorElement.textContent = message;
+    
+    const existingError = document.querySelector(`#${formType}Container .error-message`);
+    if (existingError) {
+        existingError.remove();
+    }
+    
+    const form = formType === 'driver' ? driverLoginForm : 
+                 formType === 'admin' ? adminLoginForm : 
+                 reportIssueForm;
+    
+    form.appendChild(errorElement);
+    
+    setTimeout(() => {
+        errorElement.remove();
+    }, 3000);
+}
 
     function showError(message, loginType) {
         const errorElement = document.createElement('div');
