@@ -1,32 +1,33 @@
-/* Map Container Styles */
 #map {
     height: 400px;
     width: 100%;
     border-radius: 8px;
     margin-bottom: 20px;
     border: 1px solid #ddd;
-    background-color: #f5f5f5; /* Fallback color */
+    background-color: #f5f5f5;
+    z-index: 1;
 }
 
-/* Ensure map container is visible */
-.map-container {
-    display: flex;
-    flex-direction: column;
-}
-
-/* Loading indicator */
 .map-loading {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100%;
     color: #7f8c8d;
+    font-size: 16px;
 }
 
 .map-loading i {
     font-size: 40px;
     margin-bottom: 15px;
     color: #3498db;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 /* Reset and Base Styles */
