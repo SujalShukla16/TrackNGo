@@ -150,6 +150,85 @@
             <p>&copy; 2025 TRACK N GO. All rights reserved.</p>
         </footer>
     </div>
+    //gpt started
+    <script>
+document.addEventListener("DOMContentLoaded", function() {
+    // ✅ Ensure the container is visible (if it's supposed to be shown initially)
+    document.getElementById("mapContainer").classList.remove("hidden");
+
+    // ✅ Remove existing placeholder content
+    document.querySelector(".map-placeholder").remove();
+
+    // ✅ Create a div for the map inside `#mapContainer`
+    const mapDiv = document.createElement("div");
+    mapDiv.id = "map";
+    mapDiv.style.height = "500px"; // Adjust as needed
+    mapDiv.style.width = "100%";
+    document.getElementById("mapContainer").appendChild(mapDiv);
+
+    // ✅ Initialize the Leaflet map
+    let map = L.map('map').setView([18.8943, 73.1768], 13);
+
+    // ✅ Add OpenStreetMap tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // ✅ Define route waypoints, including stops
+    const route1 = {
+        waypoints: [
+            L.latLng(18.8943, 73.1768), // Start point (PHOCC)
+            L.latLng(18.9000, 73.1900), // Stop 1
+            L.latLng(18.9030, 73.2000), // Stop 2
+            L.latLng(18.9061, 73.2089)  // End point (Dand Fata)
+        ]
+    };
+
+    // ✅ Custom white circular stop icon
+    const stopIcon = L.divIcon({
+        className: 'stop-icon',
+        html: '<div style="width: 12px; height: 12px; background: white; border: 2px solid black; border-radius: 50%;"></div>',
+        iconSize: [14, 14],
+        iconAnchor: [7, 7]
+    });
+
+    // ✅ Add stops along the route
+    const stops = [
+        { lat: 18.9000, lon: 73.1900, name: "Stop 1" },
+        { lat: 18.9030, lon: 73.2000, name: "Stop 2" }
+    ];
+
+    stops.forEach(stop => {
+        L.marker([stop.lat, stop.lon], { icon: stopIcon }).addTo(map)
+         .bindTooltip(stop.name, { permanent: true, direction: "top" });
+    });
+
+    // ✅ Initialize routing control
+    let routingControl = L.Routing.control({
+        waypoints: route1.waypoints,
+        routeWhileDragging: false,
+        router: L.Routing.osrmv1({
+            serviceUrl: 'https://router.project-osrm.org/route/v1'
+        }),
+        lineOptions: {
+            styles: [{ color: 'blue', opacity: 0.7, weight: 5 }]
+        },
+        createMarker: function(i, waypoint, n) {
+            if (i === 0 || i === n - 1) {
+                return L.marker(waypoint.latLng, {
+                    icon: L.divIcon({
+                        className: 'text-cloud',
+                        html: `<div class="text-cloud">${i === 0 ? 'PHOCC' : 'Dand Fata'}</div>`
+                    })
+                });
+            }
+            return null; // No default markers for stops
+        }
+    }).addTo(map);
+});
+</script>
+//gpt ended
 
     <script src="script.js"></script>
 </body>
