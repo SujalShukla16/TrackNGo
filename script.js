@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', function() {
     // Predefined credentials
     const validCredentials = {
@@ -59,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Map variables
     let map;
-    
+    let routingControl;
     let isMapInitialized = false;
 
     // Event Listeners
@@ -140,24 +139,18 @@ document.addEventListener('DOMContentLoaded', function() {
         reportIssueContainer.classList.add('hidden');
     }
 
-let routingControl = null; // Declare globally
-
-function initializeMap() {
-        // Ensure the map container is visible
-        mapContainer.classList.remove("hidden");
-
+    function setRoute1() {
         if (!map) {
-            // Initialize Leaflet map inside #map
-            map = L.map('map').setView([18.8943, 73.1768], 13);
-
-            // Add OpenStreetMap tile layer
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '© OpenStreetMap contributors'
-            }).addTo(map);
+            console.error("Map not initialized!");
+            return;
         }
 
-        // Define route waypoints
+        // Clear existing route if any
+        if (routingControl) {
+            map.removeControl(routingControl);
+        }
+
+        // Define route coordinates
         const route1 = {
             waypoints: [
                 L.latLng(18.8943, 73.1768), // Start point (PHOCC)
@@ -167,6 +160,13 @@ function initializeMap() {
             ]
         };
 
+        // Clear existing markers
+        map.eachLayer(layer => {
+            if (layer instanceof L.Marker) {
+                map.removeLayer(layer);
+            }
+        });
+
         // Custom stop icon
         const stopIcon = L.divIcon({
             className: 'stop-icon',
@@ -175,21 +175,17 @@ function initializeMap() {
             iconAnchor: [7, 7]
         });
 
-        // Add stops along the route
+        // Add stops
         const stops = [
             { lat: 18.9000, lon: 73.1900, name: "Stop 1" },
             { lat: 18.9030, lon: 73.2000, name: "Stop 2" }
         ];
 
         stops.forEach(stop => {
-            L.marker([stop.lat, stop.lon], { icon: stopIcon }).addTo(map)
-             .bindTooltip(stop.name, { permanent: true, direction: "top" });
+            L.marker([stop.lat, stop.lon], { icon: stopIcon })
+                .addTo(map)
+                .bindTooltip(stop.name, { permanent: true, direction: "top" });
         });
-
-        // Remove existing route if already exists
-        if (routingControl) {
-            map.removeControl(routingControl);
-        }
 
         // Initialize routing control
         routingControl = L.Routing.control({
@@ -214,36 +210,24 @@ function initializeMap() {
             }
         }).addTo(map);
 
-        // Hide default routing instructions
-        routingControl.on('routesfound', function() {
-            let itineraryPanel = document.querySelector('.leaflet-routing-container');
+        routingControl.on('routesfound', function(e) {
+            // Hide the routing instructions panel
+            const itineraryPanel = document.querySelector('.leaflet-routing-container');
             if (itineraryPanel) {
                 itineraryPanel.style.display = 'none';
             }
+            
+            // Fit the map to show the entire route
+            map.fitBounds(e.routes[0].bounds);
         });
 
-        // Resize map to fit container
-        setTimeout(() => {
-            map.invalidateSize();
-            map.fitBounds(routingControl.getPlan().getWaypoints().map(wp => wp.latLng));
-        }, 500);
+        // Error handling for route loading
+        routingControl.on('routingerror', function(err) {
+            console.error('Routing error:', err);
+            alert('Failed to load route. Please try again later.');
+        });
     }
-
-    // Show map when clicking on a route
-    function showRouteMap(routeName) {
-        mapRouteName.textContent = routeName;
-        initializeMap();
-    }
-
-    // Hide map and go back to routes
-    backFromMapBtn.addEventListener("click", () => {
-        mapContainer.classList.add("hidden");
-    });
-
-    // Example call: You can call `showRouteMap("Route 1")` when a route is selected
-    window.showRouteMap = showRouteMap; // Make function accessible globally
-});
- 
+    
 
 // Update the initMap function
 function initMap() {
@@ -364,4 +348,4 @@ function initMap() {
             showMap(routeName);
         }
     });
-
+});
