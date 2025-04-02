@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Map variables
     let map;
-    let routingControl;
+    
     let isMapInitialized = false;
 
     // Event Listeners
