@@ -141,10 +141,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 let routingControl = null; // Declare globally
 
-let routingControl = null; // Declare globally
-
-let routingControl = null; // Declare globally
-
 function setRoute1() {
     if (!map) {
         console.error("Map not initialized!");
