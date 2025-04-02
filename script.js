@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', function() {
     // Predefined credentials
     const validCredentials = {
@@ -60,8 +61,6 @@ document.addEventListener('DOMContentLoaded', function() {
     let map;
     let routingControl;
     let isMapInitialized = false;
-    let routingControl = null; // Declare this at the top of your script
-
 
     // Event Listeners
     trackBusBtn.addEventListener('click', showRoutes);
@@ -191,7 +190,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Initialize routing control
         routingControl = L.Routing.control({
-            waypoints: Route1.waypoints,
+            waypoints: route1.waypoints,
             routeWhileDragging: false,
             router: L.Routing.osrmv1({
                 serviceUrl: 'https://router.project-osrm.org/route/v1'
@@ -199,11 +198,15 @@ document.addEventListener('DOMContentLoaded', function() {
             lineOptions: {
                 styles: [{ color: 'blue', opacity: 0.7, weight: 5 }]
             },
-           createMarker: function(i, waypoint, n) {
-    return L.marker(waypoint.latLng)
-        .bindPopup(i === 0 ? 'PHOCC (Start)' : i === n - 1 ? 'Dand Fata (End)' : `Stop ${i}`);
-}
-
+            createMarker: function(i, waypoint, n) {
+                if (i === 0 || i === n - 1) {
+                    return L.marker(waypoint.latLng, {
+                        icon: L.divIcon({
+                            className: 'text-cloud',
+                            html: `<div class="text-cloud">${i === 0 ? 'PHOCC' : 'Dand Fata'}</div>`
+                        })
+                    });
+                }
                 return null;
             }
         }).addTo(map);
