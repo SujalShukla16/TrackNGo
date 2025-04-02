@@ -716,3 +716,43 @@ button:disabled:hover::before {
         font-size: 18px;
     }
 }
+/* Report Issue Styles */
+.report-issue-container {
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+    width: 100%;
+    max-width: 500px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+#reportIssueBtn {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    color: white;
+}
+
+textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s;
+    background-color: #f9f9f9;
+    resize: vertical;
+    min-height: 100px;
+}
+
+textarea:focus {
+    border-color: #3498db;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    background-color: white;
+}
+
+/* Icon for report issue button */
+#reportIssueBtn i {
+    color: white;
+}
