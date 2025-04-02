@@ -59,7 +59,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Map variables
     let map;
-    let routingControl;
     let isMapInitialized = false;
 
     // Event Listeners
@@ -147,9 +146,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Clear existing route if any
-        if (routingControl) {
-            map.removeControl(routingControl);
-        }
+// Clear existing route if any
+if (routingControl) {
+    map.removeControl(routingControl);
+    routingControl = null; // Reset the variable to avoid undefined reference error
+}
 
         // Define route coordinates
         const Route1 = {
