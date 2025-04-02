@@ -60,6 +60,8 @@ document.addEventListener('DOMContentLoaded', function() {
     let map;
     let routingControl;
     let isMapInitialized = false;
+    let routingControl = null; // Declare this at the top of your script
+
 
     // Event Listeners
     trackBusBtn.addEventListener('click', showRoutes);
