@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Map variables
     let map;
+    let routingControl;
     let isMapInitialized = false;
 
     // Event Listeners
@@ -141,100 +142,107 @@ document.addEventListener('DOMContentLoaded', function() {
 
 let routingControl = null; // Declare globally
 
-function setRoute1() {
-    if (!map) {
-        console.error("Map not initialized!");
-        return;
+function initializeMap() {
+        // Ensure the map container is visible
+        mapContainer.classList.remove("hidden");
+
+        if (!map) {
+            // Initialize Leaflet map inside #map
+            map = L.map('map').setView([18.8943, 73.1768], 13);
+
+            // Add OpenStreetMap tile layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+        }
+
+        // Define route waypoints
+        const route1 = {
+            waypoints: [
+                L.latLng(18.8943, 73.1768), // Start point (PHOCC)
+                L.latLng(18.9000, 73.1900), // Stop 1
+                L.latLng(18.9030, 73.2000), // Stop 2
+                L.latLng(18.9061, 73.2089)  // End point (Dand Fata)
+            ]
+        };
+
+        // Custom stop icon
+        const stopIcon = L.divIcon({
+            className: 'stop-icon',
+            html: '<div style="width: 12px; height: 12px; background: white; border: 2px solid black; border-radius: 50%;"></div>',
+            iconSize: [14, 14],
+            iconAnchor: [7, 7]
+        });
+
+        // Add stops along the route
+        const stops = [
+            { lat: 18.9000, lon: 73.1900, name: "Stop 1" },
+            { lat: 18.9030, lon: 73.2000, name: "Stop 2" }
+        ];
+
+        stops.forEach(stop => {
+            L.marker([stop.lat, stop.lon], { icon: stopIcon }).addTo(map)
+             .bindTooltip(stop.name, { permanent: true, direction: "top" });
+        });
+
+        // Remove existing route if already exists
+        if (routingControl) {
+            map.removeControl(routingControl);
+        }
+
+        // Initialize routing control
+        routingControl = L.Routing.control({
+            waypoints: route1.waypoints,
+            routeWhileDragging: false,
+            router: L.Routing.osrmv1({
+                serviceUrl: 'https://router.project-osrm.org/route/v1'
+            }),
+            lineOptions: {
+                styles: [{ color: 'blue', opacity: 0.7, weight: 5 }]
+            },
+            createMarker: function(i, waypoint, n) {
+                if (i === 0 || i === n - 1) {
+                    return L.marker(waypoint.latLng, {
+                        icon: L.divIcon({
+                            className: 'text-cloud',
+                            html: `<div class="text-cloud">${i === 0 ? 'PHOCC' : 'Dand Fata'}</div>`
+                        })
+                    });
+                }
+                return null;
+            }
+        }).addTo(map);
+
+        // Hide default routing instructions
+        routingControl.on('routesfound', function() {
+            let itineraryPanel = document.querySelector('.leaflet-routing-container');
+            if (itineraryPanel) {
+                itineraryPanel.style.display = 'none';
+            }
+        });
+
+        // Resize map to fit container
+        setTimeout(() => {
+            map.invalidateSize();
+            map.fitBounds(routingControl.getPlan().getWaypoints().map(wp => wp.latLng));
+        }, 500);
     }
 
-    // Clear existing route if any
-    if (routingControl) {
-        map.removeControl(routingControl);
-        routingControl = null; // Reset variable
+    // Show map when clicking on a route
+    function showRouteMap(routeName) {
+        mapRouteName.textContent = routeName;
+        initializeMap();
     }
 
-    // Define route coordinates
-    const Route1 = {
-        waypoints: [
-            L.latLng(18.8943, 73.1768), // Start point (PHOCC)
-            L.latLng(18.9000, 73.1900), // Stop 1
-            L.latLng(18.9030, 73.2000), // Stop 2
-            L.latLng(18.9061, 73.2089)  // End point (Dand Fata)
-        ]
-    };
-
-    // Clear existing markers
-    map.eachLayer(layer => {
-        if (layer instanceof L.Marker) {
-            map.removeLayer(layer);
-        }
+    // Hide map and go back to routes
+    backFromMapBtn.addEventListener("click", () => {
+        mapContainer.classList.add("hidden");
     });
 
-    // Custom stop icon
-    const stopIcon = L.divIcon({
-        className: 'stop-icon',
-        html: '<div style="width: 12px; height: 12px; background: white; border: 2px solid black; border-radius: 50%;"></div>',
-        iconSize: [14, 14],
-        iconAnchor: [7, 7]
-    });
-
-    // Add stops
-    const stops = [
-        { lat: 18.9000, lon: 73.1900, name: "Stop 1" },
-        { lat: 18.9030, lon: 73.2000, name: "Stop 2" }
-    ];
-
-    stops.forEach(stop => {
-        L.marker([stop.lat, stop.lon], { icon: stopIcon })
-            .addTo(map)
-            .bindTooltip(stop.name, { permanent: true, direction: "top" });
-    });
-
-    // Check if L.Routing exists before initializing
-    if (!L.Routing || !L.Routing.control) {
-        console.error("Leaflet Routing Machine is not loaded. Please check your script imports.");
-        return;
-    }
-
-    // Initialize routing control
-    routingControl = L.Routing.control({
-        waypoints: Route1.waypoints, // Ensure this is correct
-        routeWhileDragging: false,
-        router: L.Routing.osrmv1({
-            serviceUrl: 'https://router.project-osrm.org/route/v1'
-        }),
-        lineOptions: {
-            styles: [{ color: 'blue', opacity: 0.7, weight: 5 }]
-        },
-        createMarker: function(i, waypoint, n) {
-            return L.marker(waypoint.latLng, {
-                icon: L.divIcon({
-                    className: 'text-cloud',
-                    html: `<div style="background: black; color: white; padding: 3px; border-radius: 5px;">${i === 0 ? 'Start' : i === n - 1 ? 'End' : `Stop ${i}`}</div>`
-                })
-            });
-        }
-    }).addTo(map);
-
-    console.log("Routing request sent..."); // This should not error if everything works
-
-    routingControl.on('routesfound', function(e) {
-        console.log("Route found!", e.routes);
-        if (e.routes.length > 0) {
-            map.fitBounds(e.routes[0].bounds);
-        }
-    });
-
-    // Log routing errors
-    routingControl.on('routingerror', function(err) {
-        console.error('Routing error:', err);
-        alert('Failed to load route. Please check your internet connection or try again later.');
-    });
-}
-
-// Run function after map loads
-setTimeout(setRoute1, 1000);
-
+    // Example call: You can call `showRouteMap("Route 1")` when a route is selected
+    window.showRouteMap = showRouteMap; // Make function accessible globally
+});
  
 
 // Update the initMap function
