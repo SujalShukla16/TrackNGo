@@ -141,6 +141,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 let routingControl = null; // Declare globally
 
+let routingControl = null; // Declare globally
+
 function setRoute1() {
     if (!map) {
         console.error("Map not initialized!");
@@ -150,7 +152,7 @@ function setRoute1() {
     // Clear existing route if any
     if (routingControl) {
         map.removeControl(routingControl);
-        routingControl = null; // Reset to avoid undefined reference error
+        routingControl = null; // Reset variable
     }
 
     // Define route coordinates
@@ -192,7 +194,7 @@ function setRoute1() {
 
     // Initialize routing control
     routingControl = L.Routing.control({
-        waypoints: Route1.waypoints, // Fixed variable name
+        waypoints: Route1.waypoints, // Fixed reference
         routeWhileDragging: false,
         router: L.Routing.osrmv1({
             serviceUrl: 'https://router.project-osrm.org/route/v1'
@@ -201,32 +203,35 @@ function setRoute1() {
             styles: [{ color: 'blue', opacity: 0.7, weight: 5 }]
         },
         createMarker: function(i, waypoint, n) {
-            return L.marker(waypoint.latLng)
-                .bindPopup(i === 0 ? 'PHOCC (Start)' : i === n - 1 ? 'Dand Fata (End)' : `Stop ${i}`)
-                .openPopup(); // Ensures marker visibility
+            return L.marker(waypoint.latLng, {
+                icon: L.divIcon({
+                    className: 'text-cloud',
+                    html: `<div style="background: black; color: white; padding: 3px; border-radius: 5px;">${i === 0 ? 'Start' : i === n - 1 ? 'End' : `Stop ${i}`}</div>`
+                })
+            });
         }
     }).addTo(map);
 
-    routingControl.on('routesfound', function(e) {
-        // Hide the routing instructions panel
-        const itineraryPanel = document.querySelector('.leaflet-routing-container');
-        if (itineraryPanel) {
-            itineraryPanel.style.display = 'none';
-        }
-
-        // Fit the map to show the entire route
-        map.fitBounds(e.routes[0].bounds);
-    });
-
-    // Error handling for route loading
+    // Log routing errors
     routingControl.on('routingerror', function(err) {
         console.error('Routing error:', err);
-        alert('Failed to load route. Please try again later.');
+        alert('Failed to load route. Please check your internet connection or try again later.');
     });
+
+    // Ensure routing loads before fitting bounds
+    routingControl.on('routesfound', function(e) {
+        console.log("Route found!", e.routes);
+        if (e.routes.length > 0) {
+            map.fitBounds(e.routes[0].bounds);
+        }
+    });
+
+    console.log("Routing request sent...");
 }
 
-// Ensure function runs only after the map is ready
-map.on('load', setRoute1);
+// Ensure function runs after the map is ready
+setTimeout(setRoute1, 1000); // Added a slight delay to ensure map loads
+
  
 
 // Update the initMap function
