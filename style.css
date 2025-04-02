@@ -331,3 +331,259 @@ footer {
         font-size: 12px;
     }
 }
+/* Enhanced Login Styles */
+.login-container {
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.login-header {
+    margin-bottom: 30px;
+    text-align: center;
+    position: relative;
+}
+
+.login-header h2 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.login-header::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 4px;
+    background: #3498db;
+    margin: 15px auto 0;
+    border-radius: 2px;
+}
+
+/* Enhanced Form Styles */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    position: relative;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #2c3e50;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.form-group label i {
+    margin-right: 8px;
+    color: #3498db;
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 14px 15px 14px 40px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s;
+    background-color: #f9f9f9;
+}
+
+.form-group input:focus, .form-group select:focus {
+    border-color: #3498db;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    background-color: white;
+}
+
+.form-group::before {
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    left: 15px;
+    top: 38px;
+    color: #7f8c8d;
+}
+
+#driverId ~ .form-group::before, #newDriverId ~ .form-group::before {
+    content: '\f2c2';
+}
+
+#driverPin ~ .form-group::before, #newDriverPin ~ .form-group::before {
+    content: '\f023';
+}
+
+#adminUsername ~ .form-group::before {
+    content: '\f007';
+}
+
+#adminPassword ~ .form-group::before {
+    content: '\f023';
+}
+
+#newDriverName ~ .form-group::before {
+    content: '\f007';
+}
+
+/* Enhanced Button Styles */
+.login-btn {
+    background: linear-gradient(to right, #3498db, #2c3e50);
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Driver Dashboard Enhancements */
+.driver-info {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.info-card {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #3498db;
+}
+
+.info-card i {
+    font-size: 20px;
+    color: #3498db;
+    margin-bottom: 10px;
+}
+
+.info-card h3 {
+    color: #7f8c8d;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.info-card p {
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+/* Admin Dashboard Enhancements */
+.drivers-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.drivers-table thead tr {
+    background: linear-gradient(to right, #3498db, #2c3e50);
+    color: white;
+    text-align: left;
+}
+
+.drivers-table th, 
+.drivers-table td {
+    padding: 12px 15px;
+}
+
+.drivers-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.drivers-table tbody tr:nth-of-type(even) {
+    background-color: #f8f9fa;
+}
+
+.drivers-table tbody tr:last-of-type {
+    border-bottom: 2px solid #3498db;
+}
+
+.drivers-table tbody tr:hover {
+    background-color: #f1f8fe;
+}
+
+.action-icon {
+    color: #3498db;
+    margin: 0 5px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.action-icon:hover {
+    transform: scale(1.2);
+}
+
+.action-icon.delete {
+    color: #e74c3c;
+}
+
+/* Add Driver Form Styles */
+.add-driver-container {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+    width: 100%;
+    max-width: 600px;
+}
+
+.add-driver-container h2 {
+    color: #2c3e50;
+    margin-bottom: 25px;
+    text-align: center;
+    position: relative;
+}
+
+.add-driver-container h2::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 4px;
+    background: #3498db;
+    margin: 15px auto 0;
+    border-radius: 2px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .driver-info {
+        grid-template-columns: 1fr;
+    }
+    
+    .drivers-table {
+        display: block;
+        overflow-x: auto;
+    }
+}
