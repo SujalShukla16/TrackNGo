@@ -1,3 +1,6 @@
+let map;
+let routingControl;
+
 document.addEventListener('DOMContentLoaded', function() {
     // Predefined credentials
     const validCredentials = {
@@ -95,17 +98,106 @@ document.addEventListener('DOMContentLoaded', function() {
         adminLoginContainer.classList.add('hidden');
     }
 
-    function showMap(routeName) {
-        document.querySelector('.action-buttons').classList.add('hidden');
-        routesContainer.classList.add('hidden');
-        mapContainer.classList.remove('hidden');
-        driverLoginContainer.classList.add('hidden');
-        adminLoginContainer.classList.add('hidden');
-        
-        mapRouteName.textContent = routeName;
-        mapDescription.textContent = routeInfo[routeName].mapInfo;
+function showMap(routeName) {
+    hideAllViews();
+    mapContainer.classList.remove('hidden');
+    mapRouteName.textContent = routeName;
+
+    // Initialize map only once
+    if (!map) {
+        initMap();
     }
 
+    // Set the appropriate route
+    if (routeName === "Route 1: Downtown Loop") {
+        setRoute1();
+    }
+    // Add conditions for other routes when implemented
+}
+
+function initMap() {
+    map = L.map('map').setView([18.8943, 73.1768], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+}
+
+// Route 1 configuration
+function setRoute1() {
+    // Clear existing route if any
+    if (routingControl) {
+        map.removeControl(routingControl);
+    }
+
+    const route1 = {
+        waypoints: [
+            L.latLng(18.8943, 73.1768), // Start point (PHOCC)
+            L.latLng(18.9000, 73.1900), // Stop 1
+            L.latLng(18.9030, 73.2000), // Stop 2
+            L.latLng(18.9061, 73.2089)  // End point (Dand Fata)
+        ]
+    };
+
+    // Clear existing markers
+    map.eachLayer(layer => {
+        if (layer instanceof L.Marker) {
+            map.removeLayer(layer);
+        }
+    });
+
+    // Custom stop icon
+    const stopIcon = L.divIcon({
+        className: 'stop-icon',
+        html: '<div style="width: 12px; height: 12px; background: white; border: 2px solid black; border-radius: 50%;"></div>',
+        iconSize: [14, 14],
+        iconAnchor: [7, 7]
+    });
+
+    // Add stops
+    const stops = [
+        { lat: 18.9000, lon: 73.1900, name: "Stop 1" },
+        { lat: 18.9030, lon: 73.2000, name: "Stop 2" }
+    ];
+
+    stops.forEach(stop => {
+        L.marker([stop.lat, stop.lon], { icon: stopIcon }).addTo(map)
+         .bindTooltip(stop.name, { permanent: true, direction: "top" });
+    });
+
+    // Initialize routing control
+    routingControl = L.Routing.control({
+        waypoints: route1.waypoints,
+        routeWhileDragging: false,
+        router: L.Routing.osrmv1({
+            serviceUrl: 'https://router.project-osrm.org/route/v1'
+        }),
+        lineOptions: {
+            styles: [{ color: 'blue', opacity: 0.7, weight: 5 }]
+        },
+        createMarker: function(i, waypoint, n) {
+            if (i === 0 || i === n - 1) {
+                return L.marker(waypoint.latLng, {
+                    icon: L.divIcon({
+                        className: 'text-cloud',
+                        html: `<div class="text-cloud">${i === 0 ? 'PHOCC' : 'Dand Fata'}</div>`
+                    })
+                });
+            }
+            return null;
+        }
+    }).addTo(map);
+
+    routingControl.on('routesfound', function() {
+        let itineraryPanel = document.querySelector('.leaflet-routing-container');
+        if (itineraryPanel) {
+            itineraryPanel.style.display = 'none';
+        }
+    });
+}
+    
+    
     function showDriverLogin() {
         document.querySelector('.action-buttons').classList.add('hidden');
         routesContainer.classList.add('hidden');
