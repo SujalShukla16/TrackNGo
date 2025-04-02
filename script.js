@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Initialize routing control
         routingControl = L.Routing.control({
-            waypoints: route1.waypoints,
+            waypoints: Route1.waypoints,
             routeWhileDragging: false,
             router: L.Routing.osrmv1({
                 serviceUrl: 'https://router.project-osrm.org/route/v1'
@@ -197,15 +197,11 @@ document.addEventListener('DOMContentLoaded', function() {
             lineOptions: {
                 styles: [{ color: 'blue', opacity: 0.7, weight: 5 }]
             },
-            createMarker: function(i, waypoint, n) {
-                if (i === 0 || i === n - 1) {
-                    return L.marker(waypoint.latLng, {
-                        icon: L.divIcon({
-                            className: 'text-cloud',
-                            html: `<div class="text-cloud">${i === 0 ? 'PHOCC' : 'Dand Fata'}</div>`
-                        })
-                    });
-                }
+           createMarker: function(i, waypoint, n) {
+    return L.marker(waypoint.latLng)
+        .bindPopup(i === 0 ? 'PHOCC (Start)' : i === n - 1 ? 'Dand Fata (End)' : `Stop ${i}`);
+}
+
                 return null;
             }
         }).addTo(map);
