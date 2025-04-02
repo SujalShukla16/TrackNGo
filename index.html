@@ -20,19 +20,62 @@
 
         <main>
             <div class="action-buttons">
-                <button class="action-btn" id="trackBusBtn">
-                    <i class="fas fa-bus"></i>
-                    <span>Track Bus</span>
-                </button>
-                <button class="action-btn" id="driverBtn">
-                    <i class="fas fa-id-card"></i>
-                    <span>Driver Login</span>
-                </button>
-                <button class="action-btn" id="adminBtn">
-                    <i class="fas fa-user-shield"></i>
-                    <span>Admin Login</span>
-                </button>
-            </div>
+    <button class="action-btn" id="trackBusBtn">
+        <i class="fas fa-bus"></i>
+        <span>Track Bus</span>
+    </button>
+    <button class="action-btn" id="reportIssueBtn">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span>Report Issue</span>
+    </button>
+    <button class="action-btn" id="driverBtn">
+        <i class="fas fa-id-card"></i>
+        <span>Driver Login</span>
+    </button>
+    <button class="action-btn" id="adminBtn">
+        <i class="fas fa-user-shield"></i>
+        <span>Admin Login</span>
+    </button>
+</div>
+
+<!-- Add this new container after other containers -->
+<div class="report-issue-container hidden" id="reportIssueContainer">
+    <div class="login-header">
+        <h2>Report an Issue</h2>
+    </div>
+    <form id="reportIssueForm" class="login-form">
+        <div class="form-group">
+            <label for="issueType"><i class="fas fa-list"></i> Issue Type</label>
+            <select id="issueType" required>
+                <option value="">Select issue type</option>
+                <option value="late">Bus Running Late</option>
+                <option value="crowded">Overcrowded Bus</option>
+                <option value="behavior">Driver Behavior</option>
+                <option value="cleanliness">Cleanliness Issue</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="issueRoute"><i class="fas fa-route"></i> Route (if known)</label>
+            <select id="issueRoute">
+                <option value="">Select route (optional)</option>
+                <option value="Route 1">Route 1: Downtown Loop</option>
+                <option value="Route 2">Route 2: University Express</option>
+                <option value="Route 3">Route 3: Suburban Connector</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="issueBus"><i class="fas fa-bus"></i> Bus Number (if known)</label>
+            <input type="text" id="issueBus" placeholder="e.g. B-101">
+        </div>
+        <div class="form-group">
+            <label for="issueDescription"><i class="fas fa-comment"></i> Description</label>
+            <textarea id="issueDescription" rows="4" required placeholder="Please describe the issue in detail"></textarea>
+        </div>
+        <button type="submit" class="login-btn">Submit Report</button>
+        <button type="button" class="cancel-btn" id="cancelReportIssue">Cancel</button>
+    </form>
+</div>
 
             <!-- Track Bus View -->
             <div class="routes-container hidden" id="routesContainer">
