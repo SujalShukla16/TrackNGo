@@ -30,7 +30,6 @@
     100% { transform: rotate(360deg); }
 }
 
-/* Reset and Base Styles */
 * {
     margin: 0;
     padding: 0;
@@ -56,7 +55,6 @@ body {
     display: none !important;
 }
 
-/* Header Styles */
 header {
     text-align: center;
     margin-bottom: 30px;
@@ -87,7 +85,6 @@ header p {
     font-size: 14px;
 }
 
-/* Action Buttons */
 .action-buttons {
     display: flex;
     flex-direction: column;
@@ -122,7 +119,6 @@ header p {
     font-size: 20px;
 }
 
-/* Login Container */
 .login-container {
     background: white;
     border-radius: 10px;
@@ -144,7 +140,6 @@ header p {
     font-size: 22px;
 }
 
-/* Form Styles */
 .login-form {
     display: flex;
     flex-direction: column;
@@ -230,7 +225,6 @@ header p {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Routes Container */
 .routes-container {
     background: white;
     border-radius: 10px;
@@ -277,7 +271,6 @@ header p {
     font-size: 14px;
 }
 
-/* Map Container */
 .map-container {
     background: white;
     border-radius: 10px;
@@ -312,7 +305,6 @@ header p {
     color: #3498db;
 }
 
-/* Back Button */
 .back-btn {
     background: #7f8c8d;
     color: white;
@@ -331,7 +323,6 @@ header p {
     background: #6c7a7d;
 }
 
-/* Footer Styles */
 footer {
     text-align: center;
     margin-top: auto;
@@ -340,7 +331,6 @@ footer {
     font-size: 14px;
 }
 
-/* Responsive Adjustments */
 @media (max-width: 480px) {
     .container {
         padding: 15px;
@@ -363,7 +353,6 @@ footer {
         font-size: 12px;
     }
 }
-/* Enhanced Login Styles */
 .login-container {
     background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
     border-radius: 12px;
@@ -398,7 +387,6 @@ footer {
     border-radius: 2px;
 }
 
-/* Enhanced Form Styles */
 .login-form {
     display: flex;
     flex-direction: column;
@@ -468,7 +456,6 @@ footer {
     content: '\f007';
 }
 
-/* Enhanced Button Styles */
 .login-btn {
     background: linear-gradient(to right, #3498db, #2c3e50);
     color: white;
@@ -490,7 +477,6 @@ footer {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Driver Dashboard Enhancements */
 .driver-info {
     background: white;
     border-radius: 12px;
@@ -527,7 +513,6 @@ footer {
     font-size: 16px;
 }
 
-/* Admin Dashboard Enhancements */
 .drivers-table {
     width: 100%;
     border-collapse: collapse;
@@ -580,7 +565,6 @@ footer {
     color: #e74c3c;
 }
 
-/* Add Driver Form Styles */
 .add-driver-container {
     background: white;
     border-radius: 12px;
@@ -608,7 +592,6 @@ footer {
     border-radius: 2px;
 }
 
-/* Responsive Adjustments */
 @media (max-width: 768px) {
     .driver-info {
         grid-template-columns: 1fr;
@@ -619,7 +602,6 @@ footer {
         overflow-x: auto;
     }
 }
-/* Enhanced Button Styles */
 .driver-btn, .admin-btn {
     border: none;
     padding: 16px;
@@ -665,7 +647,6 @@ footer {
     transform: scale(1.2);
 }
 
-/* Driver Buttons */
 #startShiftBtn {
     background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
     color: white;
@@ -681,7 +662,6 @@ footer {
     color: white;
 }
 
-/* Admin Buttons */
 #addDriverBtn {
     background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
     color: white;
@@ -697,14 +677,12 @@ footer {
     color: white;
 }
 
-/* Logout Buttons */
 .logout-btn {
     background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
     color: white;
     margin-top: 20px;
 }
 
-/* Button States */
 button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
@@ -715,7 +693,6 @@ button:disabled:hover::before {
     left: -100%;
 }
 
-/* Button Container Styles */
 .driver-actions, .admin-actions {
     display: flex;
     flex-direction: column;
@@ -723,7 +700,6 @@ button:disabled:hover::before {
     margin-top: 20px;
 }
 
-/* Button Animation */
 @keyframes pulse {
     0% { transform: scale(1); }
     50% { transform: scale(1.05); }
@@ -737,7 +713,6 @@ button:disabled:hover::before {
     animation: pulse 1.5s infinite;
 }
 
-/* Responsive Adjustments */
 @media (max-width: 480px) {
     .driver-btn, .admin-btn {
         padding: 14px;
@@ -748,7 +723,6 @@ button:disabled:hover::before {
         font-size: 18px;
     }
 }
-/* Report Issue Styles */
 .report-issue-container {
     background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
     border-radius: 12px;
@@ -784,7 +758,6 @@ textarea:focus {
     background-color: white;
 }
 
-/* Icon for report issue button */
 #reportIssueBtn i {
     color: white;
 }
