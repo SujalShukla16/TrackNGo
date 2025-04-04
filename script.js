@@ -6,26 +6,26 @@ document.addEventListener('DOMContentLoaded', function() {
             password: "admin123"
         },
         drivers: {
-            "DRV-1001": { pin: "1111", route: "Route 1: Downtown Loop", bus: "B-101" },
-            "DRV-1002": { pin: "2222", route: "Route 2: University Express", bus: "B-202" },
-            "DRV-1003": { pin: "3333", route: "Route 3: Suburban Connector", bus: "B-303" }
+            "DRV-1001": { pin: "1111", route: "Route 1: Mohopada to Panvel", bus: "B-101" },
+            "DRV-1002": { pin: "2222", route: "Route 2: Khopoli to Panvel", bus: "B-202" },
+            "DRV-1003": { pin: "3333", route: "Route 3: Khopoli to Rasayani", bus: "B-303" }
         }
     };
 
     // Route information
     const routeInfo = {
-        "Route 1: Downtown Loop": {
-            description: "Downtown area covering main business district and shopping centers",
+        "Route 1: Mohopada to Panvel": {
+            description: "Description of route 1"
             stops: 15,
             frequency: "20 mins"
         },
-        "Route 2: University Express": {
-            description: "Connects university campus with student residential areas",
+        "Route 2: Khopoli to Panvel": {
+            description: "Description of route 2",
             stops: 8,
             frequency: "15 mins"
         },
-        "Route 3: Suburban Connector": {
-            description: "Links suburban neighborhoods with downtown transfer station",
+        "Route 3: Khopoli to Rasayani": {
+            description: "Description of route 3",
             stops: 12,
             frequency: "30 mins"
         }
