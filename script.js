@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Predefined credentials
     const validCredentials = {
         admin: {
             username: "admin",
@@ -12,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    // Route information
     const routeInfo = {
         "Route 1: Mohopada to Panvel": {
             description: "Description of Route 1",
@@ -31,7 +29,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    // DOM Elements
     const trackBusBtn = document.getElementById('trackBusBtn');
     const reportIssueBtn = document.getElementById('reportIssueBtn');
     const driverBtn = document.getElementById('driverBtn');
@@ -56,12 +53,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const mapRouteName = document.getElementById('mapRouteName');
     const mapElement = document.getElementById('map');
 
-    // Map variables
     let map;
     let routingControl;
     let isMapInitialized = false;
 
-    // Event Listeners
     trackBusBtn.addEventListener('click', showRoutes);
     reportIssueBtn.addEventListener('click', showReportIssue);
     driverBtn.addEventListener('click', showDriverLogin);
@@ -77,7 +72,6 @@ document.addEventListener('DOMContentLoaded', function() {
     adminLoginForm.addEventListener('submit', handleAdminLogin);
     reportIssueForm.addEventListener('submit', handleReportIssue);
 
-    // View Management Functions
     function showHome() {
         hideAllViews();
         document.querySelector('.action-buttons').classList.remove('hidden');
@@ -88,27 +82,22 @@ document.addEventListener('DOMContentLoaded', function() {
         routesContainer.classList.remove('hidden');
     }
 
-// Update the showMap function
     function showMap(routeName) {
         hideAllViews();
         mapContainer.classList.remove('hidden');
         mapRouteName.textContent = routeName;
 
-        // Show loading state
         const mapElement = document.getElementById('map');
         mapElement.innerHTML = '<div class="map-loading"><i class="fas fa-spinner fa-spin"></i><p>Loading map...</p></div>';
 
-        // Initialize map after slight delay
         setTimeout(() => {
             if (!isMapInitialized) {
                 initMap();
                 isMapInitialized = true;
             } else {
-                // If map exists, invalidate size to fix display issues
                 map.invalidateSize();
             }
 
-            // Set the appropriate route
             if (routeName === "Route 1: Mohopada to Panvel") {
                 setRoute1();
             }
@@ -145,29 +134,25 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Clear existing route if any
         if (routingControl) {
             map.removeControl(routingControl);
         }
 
-        // Define route coordinates
         const Route1 = {
             waypoints: [
-                L.latLng(18.8943, 73.1768), // Start point (PHOCC)
-                L.latLng(18.9000, 73.1900), // Stop 1
-                L.latLng(18.9030, 73.2000), // Stop 2
-                L.latLng(18.9061, 73.2089)  // End point (Dand Fata)
+                L.latLng(18.8943, 73.1768), 
+                L.latLng(18.9000, 73.1900), 
+                L.latLng(18.9030, 73.2000), 
+                L.latLng(18.9061, 73.2089)  
             ]
         };
 
-        // Clear existing markers
         map.eachLayer(layer => {
             if (layer instanceof L.Marker) {
                 map.removeLayer(layer);
             }
         });
 
-        // Custom stop icon
         const stopIcon = L.divIcon({
             className: 'stop-icon',
             html: '<div style="width: 12px; height: 12px; background: white; border: 2px solid black; border-radius: 50%;"></div>',
@@ -175,7 +160,6 @@ document.addEventListener('DOMContentLoaded', function() {
             iconAnchor: [7, 7]
         });
 
-        // Add stops
         const stops = [
             { lat: 18.9000, lon: 73.1900, name: "Stop 1" },
             { lat: 18.9030, lon: 73.2000, name: "Stop 2" }
@@ -187,7 +171,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 .bindTooltip(stop.name, { permanent: true, direction: "top" });
         });
 
-        // Initialize routing control
         routingControl = L.Routing.control({
             waypoints: route1.waypoints,
             routeWhileDragging: false,
@@ -211,17 +194,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }).addTo(map);
 
         routingControl.on('routesfound', function(e) {
-            // Hide the routing instructions panel
             const itineraryPanel = document.querySelector('.leaflet-routing-container');
             if (itineraryPanel) {
                 itineraryPanel.style.display = 'none';
             }
             
-            // Fit the map to show the entire route
             map.fitBounds(e.routes[0].bounds);
         });
 
-        // Error handling for route loading
         routingControl.on('routingerror', function(err) {
             console.error('Routing error:', err);
             alert('Failed to load route. Please try again later.');
@@ -229,10 +209,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
 
-// Update the initMap function
 function initMap() {
         const mapElement = document.getElementById('map');
-        mapElement.innerHTML = ''; // Clear loading message
+        mapElement.innerHTML = ''; 
         
         map = L.map('map').setView([18.8943, 73.1768], 13);
 
@@ -241,13 +220,11 @@ function initMap() {
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
 
-        // Add slight delay to ensure tiles load
         setTimeout(() => {
             map.invalidateSize();
         }, 200);
     }
 
-    // Authentication Functions
     function handleDriverLogin(e) {
         e.preventDefault();
         
@@ -318,7 +295,6 @@ function initMap() {
         showHome();
     }
 
-    // Helper Functions
     function showError(message, formType) {
         const errorElement = document.createElement('div');
         errorElement.className = 'error-message';
@@ -340,7 +316,6 @@ function initMap() {
         }, 3000);
     }
 
-    // Make route items clickable
     document.addEventListener('click', function(e) {
         if (e.target.closest('.route-item')) {
             const routeItem = e.target.closest('.route-item');
