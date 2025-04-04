@@ -61,7 +61,6 @@
                 </button>
             </div>
 
-            <!-- Route Map View -->
             <div class="map-container hidden" id="routeMapContainer">
                 <h2 id="assignedRouteName">Assigned Route</h2>
                 <div class="map-placeholder">
@@ -79,7 +78,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Check if driver is logged in
             const driverId = sessionStorage.getItem('driverId');
             const driverRoute = sessionStorage.getItem('driverRoute');
             const driverBus = sessionStorage.getItem('driverBus');
@@ -90,12 +88,10 @@
                 return;
             }
 
-            // Display driver info
             document.getElementById('driverIdDisplay').textContent = driverId;
             document.getElementById('driverBusDisplay').textContent = driverBus;
             document.getElementById('driverRouteDisplay').textContent = driverRoute;
 
-            // Route information
             const routeInfo = {
                 "Route 1: Mohopada to Panvel": {
                     description: "Description for route 1",
@@ -114,7 +110,6 @@
                 }
             };
 
-            // DOM Elements
             const startShiftBtn = document.getElementById('startShiftBtn');
             const endShiftBtn = document.getElementById('endShiftBtn');
             const viewRouteBtn = document.getElementById('viewRouteBtn');
@@ -125,7 +120,6 @@
             const routeMapDescription = document.getElementById('routeMapDescription');
             const backFromRouteMap = document.getElementById('backFromRouteMap');
 
-            // Button functionality
             startShiftBtn.addEventListener('click', function() {
                 if (confirm('Are you ready to start your shift?')) {
                     startShiftBtn.disabled = true;
@@ -145,12 +139,10 @@
             });
             
             viewRouteBtn.addEventListener('click', function() {
-                // Show the route map
                 document.querySelector('.driver-info').classList.add('hidden');
                 document.querySelector('.driver-actions').classList.add('hidden');
                 routeMapContainer.classList.remove('hidden');
                 
-                // Set route information
                 assignedRouteName.textContent = driverRoute;
                 routeMapDescription.textContent = `${routeInfo[driverRoute].description} | Stops: ${routeInfo[driverRoute].stops} | Frequency: ${routeInfo[driverRoute].frequency}`;
             });
