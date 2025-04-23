@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         routingControl = L.Routing.control({
-            waypoints: route1.waypoints,
+            waypoints: Route1.waypoints,
             routeWhileDragging: false,
             router: L.Routing.osrmv1({
                 serviceUrl: 'https://router.project-osrm.org/route/v1'
