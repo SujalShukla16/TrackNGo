@@ -7,29 +7,66 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="icon" href="bus-icon.png" type="image/png">
-    <!-- Add these lines -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
-    <style>
-        #routeMap {
-            height: 400px;
-            width: 100%;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
-        <!-- ... (keep existing header content) ... -->
+        <header>
+            <div class="logo">
+                <img src="bus-icon.png" alt="Bus Icon">
+                <h1>TRACK N GO DRIVER</h1>
+            </div>
+            <p>Driver Dashboard</p>
+        </header>
 
         <main>
-            <!-- ... (keep existing driver-info and driver-actions) ... -->
+            <div class="driver-info">
+                <div class="info-card">
+                    <i class="fas fa-id-badge"></i>
+                    <h3>Driver ID</h3>
+                    <p id="driverIdDisplay">DRV-XXXX</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-bus"></i>
+                    <h3>Assigned Bus</h3>
+                    <p id="driverBusDisplay">Not assigned</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-route"></i>
+                    <h3>Assigned Route</h3>
+                    <p id="driverRouteDisplay">Not assigned</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-clock"></i>
+                    <h3>Current Status</h3>
+                    <p id="driverStatus">Off duty</p>
+                </div>
+            </div>
+
+            <div class="driver-actions">
+                <button class="driver-btn" id="startShiftBtn">
+                    <i class="fas fa-play-circle"></i>
+                    <span>Start Shift</span>
+                </button>
+                <button class="driver-btn" id="endShiftBtn" disabled>
+                    <i class="fas fa-stop-circle"></i>
+                    <span>End Shift</span>
+                </button>
+                <button class="driver-btn" id="viewRouteBtn">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <span>View Route</span>
+                </button>
+                <button class="driver-btn logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
 
             <div class="map-container hidden" id="routeMapContainer">
                 <h2 id="assignedRouteName">Assigned Route</h2>
-                <div id="routeMap"></div> <!-- Changed from map-placeholder to actual map div -->
+                <div class="map-placeholder">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <p id="routeMapDescription">Route map will be displayed here</p>
+                </div>
                 <button class="back-btn" id="backFromRouteMap">Back to Dashboard</button>
             </div>
         </main>
@@ -39,10 +76,6 @@
         </footer>
     </div>
 
-    <!-- Add these scripts -->
-    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
-    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const driverId = sessionStorage.getItem('driverId');
@@ -55,126 +88,79 @@
                 return;
             }
 
-            // ... (keep existing driver info display code) ...
+            document.getElementById('driverIdDisplay').textContent = driverId;
+            document.getElementById('driverBusDisplay').textContent = driverBus;
+            document.getElementById('driverRouteDisplay').textContent = driverRoute;
 
-            let map;
-            let routingControl;
-
-            function initMap() {
-                map = L.map('routeMap').setView([18.8943, 73.1768], 13);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    maxZoom: 19,
-                    attribution: '© OpenStreetMap contributors'
-                }).addTo(map);
-            }
-
-            function setRoute1() {
-                if (!map) {
-                    console.error("Map not initialized!");
-                    return;
+            const routeInfo = {
+                "Route 1: Mohopada to Panvel": {
+                    description: "Description for route 1",
+                    stops: 15,
+                    frequency: "20 mins"
+                },
+                "Route 2: Khopoli to Panvel": {
+                    description: "Description for route 2",
+                    stops: 8,
+                    frequency: "15 mins"
+                },
+                "Route 3: Khopoli to Rasayani": {
+                    description: "Description for route 3",
+                    stops: 12,
+                    frequency: "30 mins"
                 }
+            };
 
-                if (routingControl) {
-                    map.removeControl(routingControl);
+            const startShiftBtn = document.getElementById('startShiftBtn');
+            const endShiftBtn = document.getElementById('endShiftBtn');
+            const viewRouteBtn = document.getElementById('viewRouteBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const statusDisplay = document.getElementById('driverStatus');
+            const routeMapContainer = document.getElementById('routeMapContainer');
+            const assignedRouteName = document.getElementById('assignedRouteName');
+            const routeMapDescription = document.getElementById('routeMapDescription');
+            const backFromRouteMap = document.getElementById('backFromRouteMap');
+
+            startShiftBtn.addEventListener('click', function() {
+                if (confirm('Are you ready to start your shift?')) {
+                    startShiftBtn.disabled = true;
+                    endShiftBtn.disabled = false;
+                    statusDisplay.textContent = 'On duty - Active';
+                    alert('Shift started! Your location is now being tracked.');
                 }
-
-                const route1 = {
-                    waypoints: [
-                        L.latLng(18.8943, 73.1768), 
-                        L.latLng(18.9000, 73.1900), 
-                        L.latLng(18.9030, 73.2000), 
-                        L.latLng(18.9061, 73.2089)  
-                    ]
-                };
-
-                // Clear existing markers
-                map.eachLayer(layer => {
-                    if (layer instanceof L.Marker) {
-                        map.removeLayer(layer);
-                    }
-                });
-
-                const stopIcon = L.divIcon({
-                    className: 'stop-icon',
-                    html: '<div style="width: 12px; height: 12px; background: white; border: 2px solid black; border-radius: 50%;"></div>',
-                    iconSize: [14, 14],
-                    iconAnchor: [7, 7]
-                });
-
-                const stops = [
-                    { lat: 18.9000, lon: 73.1900, name: "Stop 1" },
-                    { lat: 18.9030, lon: 73.2000, name: "Stop 2" }
-                ];
-
-                stops.forEach(stop => {
-                    L.marker([stop.lat, stop.lon], { icon: stopIcon })
-                        .addTo(map)
-                        .bindTooltip(stop.name, { permanent: true, direction: "top" });
-                });
-
-                routingControl = L.Routing.control({
-                    waypoints: route1.waypoints,
-                    routeWhileDragging: false,
-                    router: L.Routing.osrmv1({
-                        serviceUrl: 'https://router.project-osrm.org/route/v1'
-                    }),
-                    lineOptions: {
-                        styles: [{ color: 'blue', opacity: 0.7, weight: 5 }]
-                    },
-                    createMarker: function(i, waypoint, n) {
-                        if (i === 0 || i === n - 1) {
-                            return L.marker(waypoint.latLng, {
-                                icon: L.divIcon({
-                                    className: 'text-cloud',
-                                    html: `<div class="text-cloud">${i === 0 ? 'PHOCC' : 'Dand Fata'}</div>`
-                                })
-                            });
-                        }
-                        return null;
-                    }
-                }).addTo(map);
-
-                routingControl.on('routesfound', function(e) {
-                    const itineraryPanel = document.querySelector('.leaflet-routing-container');
-                    if (itineraryPanel) {
-                        itineraryPanel.style.display = 'none';
-                    }
-                    
-                    map.fitBounds(e.routes[0].bounds);
-                });
-
-                routingControl.on('routingerror', function(err) {
-                    console.error('Routing error:', err);
-                    alert('Failed to load route. Please try again later.');
-                });
-            }
-
-            // ... (keep existing event listeners) ...
-
+            });
+            
+            endShiftBtn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to end your shift?')) {
+                    startShiftBtn.disabled = false;
+                    endShiftBtn.disabled = true;
+                    statusDisplay.textContent = 'Off duty';
+                    alert('Shift ended successfully!');
+                }
+            });
+            
             viewRouteBtn.addEventListener('click', function() {
                 document.querySelector('.driver-info').classList.add('hidden');
                 document.querySelector('.driver-actions').classList.add('hidden');
                 routeMapContainer.classList.remove('hidden');
                 
                 assignedRouteName.textContent = driverRoute;
-                
-                // Initialize map and show route based on assigned route
-                if (!map) {
-                    initMap();
-                }
-                
-                if (driverRoute === "Route 1: Mohopada to Panvel") {
-                    setRoute1();
-                }
-                // Add conditions for other routes as needed
-                
-                // Force map to resize and redraw
-                setTimeout(() => {
-                    map.invalidateSize();
-                }, 100);
+                routeMapDescription.textContent = `${routeInfo[driverRoute].description} | Stops: ${routeInfo[driverRoute].stops} | Frequency: ${routeInfo[driverRoute].frequency}`;
             });
             
-            // ... (rest of your existing code) ...
+            backFromRouteMap.addEventListener('click', function() {
+                routeMapContainer.classList.add('hidden');
+                document.querySelector('.driver-info').classList.remove('hidden');
+                document.querySelector('.driver-actions').classList.remove('hidden');
+            });
+            
+            logoutBtn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to logout?')) {
+                    sessionStorage.removeItem('driverId');
+                    sessionStorage.removeItem('driverRoute');
+                    sessionStorage.removeItem('driverBus');
+                    window.location.href = 'index.html';
+                }
+            });
         });
     </script>
 </body>
