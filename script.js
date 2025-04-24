@@ -1,20 +1,4 @@
 
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyAWuxLWlG0YmpvqzTE-tMWEy_7xND8OI18",
-    authDomain: "bustracking-daba4.firebaseapp.com",
-    databaseURL: "https://bustracking-daba4-default-rtdb.firebaseio.com",
-    projectId: "bustracking-daba4",
-    storageBucket: "bustracking-daba4.firebasestorage.app",
-    messagingSenderId: "638714966104",
-    appId: "1:638714966104:web:dc5a81c5c1311c27461a2d",
-    measurementId: "G-PRZCM27DDR"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
-</script>
-
-
 document.addEventListener('DOMContentLoaded', function() {
     const validCredentials = {
         admin: {
