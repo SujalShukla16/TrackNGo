@@ -34,7 +34,7 @@ document.getElementById('startShiftBtn').addEventListener('click', function() {
         alert("Error getting location: " + error.message);
     });
 });
-    )
+    
     };
 
     const routeInfo = {
