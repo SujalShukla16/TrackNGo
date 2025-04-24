@@ -12,41 +12,28 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-      const startShiftBtn = document.getElementById('startShiftBtn');
-if (startShiftBtn) {
-    startShiftBtn.addEventListener('click', () => {
-        const driverId = sessionStorage.getItem('driverId');
-        if (!driverId) {
-            alert("Driver not logged in.");
-            return;
-        }
+document.getElementById('startShiftBtn').addEventListener('click', function() {
+    if (!navigator.geolocation) {
+        alert("Geolocation is not supported by your browser");
+        return;
+    }
 
-        if (!navigator.geolocation) {
-            alert("Geolocation is not supported by your browser.");
-            return;
-        }
+    navigator.geolocation.getCurrentPosition(function(position) {
+        const driverId = sessionStorage.getItem('driverId') || 'unknown_driver';
 
-        navigator.geolocation.watchPosition(position => {
-            const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
-            const timestamp = new Date().toISOString();
+        const locationData = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            timestamp: Date.now()
+        };
 
-            firebase.database().ref(`locations/${driverId}`).set({
-                lat,
-                lon,
-                timestamp
-            });
-
-            console.log(`Location updated for ${driverId}:`, lat, lon);
-        }, error => {
-            console.error("Location error:", error);
-            alert("Unable to get location. Please allow access.");
-        }, {
-            enableHighAccuracy: true,
-            maximumAge: 10000,
-            timeout: 10000
-        });
+        firebase.database().ref('locations/' + driverId).set(locationData)
+            .then(() => console.log("Location data written to Firebase"))
+            .catch(error => console.error("Error writing to Firebase:", error));
+    }, function(error) {
+        alert("Error getting location: " + error.message);
     });
+});
     )
     };
 
