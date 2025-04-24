@@ -47,7 +47,7 @@ if (startShiftBtn) {
             timeout: 10000
         });
     });
-}
+    
     };
 
     const routeInfo = {
