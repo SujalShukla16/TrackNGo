@@ -1,7 +1,16 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 <script>
-  const firebaseConfig = { /* paste your config here */ };
+  const firebaseConfig = {
+    apiKey: "AIzaSyAWuxLWlG0YmpvqzTE-tMWEy_7xND8OI18",
+    authDomain: "bustracking-daba4.firebaseapp.com",
+    databaseURL: "https://bustracking-daba4-default-rtdb.firebaseio.com",
+    projectId: "bustracking-daba4",
+    storageBucket: "bustracking-daba4.firebasestorage.app",
+    messagingSenderId: "638714966104",
+    appId: "1:638714966104:web:dc5a81c5c1311c27461a2d",
+    measurementId: "G-PRZCM27DDR"
+  };
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
 </script>
@@ -18,6 +27,43 @@ document.addEventListener('DOMContentLoaded', function() {
             "DRV-1002": { pin: "2222", route: "Route 2: Khopoli to Panvel", bus: "B-202" },
             "DRV-1003": { pin: "3333", route: "Route 3: Khopoli to Rasayani", bus: "B-303" }
         }
+
+      const startShiftBtn = document.getElementById('startShiftBtn');
+if (startShiftBtn) {
+    startShiftBtn.addEventListener('click', () => {
+        const driverId = sessionStorage.getItem('driverId');
+        if (!driverId) {
+            alert("Driver not logged in.");
+            return;
+        }
+
+        if (!navigator.geolocation) {
+            alert("Geolocation is not supported by your browser.");
+            return;
+        }
+
+        navigator.geolocation.watchPosition(position => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            const timestamp = new Date().toISOString();
+
+            firebase.database().ref(`locations/${driverId}`).set({
+                lat,
+                lon,
+                timestamp
+            });
+
+            console.log(`Location updated for ${driverId}:`, lat, lon);
+        }, error => {
+            console.error("Location error:", error);
+            alert("Unable to get location. Please allow access.");
+        }, {
+            enableHighAccuracy: true,
+            maximumAge: 10000,
+            timeout: 10000
+        });
+    });
+}
     };
 
     const routeInfo = {
