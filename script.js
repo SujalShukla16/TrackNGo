@@ -10,7 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
             "DRV-1002": { pin: "2222", route: "Route 2: Khopoli to Panvel", bus: "B-202" },
             "DRV-1003": { pin: "3333", route: "Route 3: Khopoli to Rasayani", bus: "B-303" }
         }
-
+    }
+    
       const startShiftBtn = document.getElementById('startShiftBtn');
 if (startShiftBtn) {
     startShiftBtn.addEventListener('click', () => {
