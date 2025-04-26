@@ -13,53 +13,59 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-  document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () {
     const startShiftBtn = document.getElementById('startShiftBtn');
-    
-    const driverId = sessionStorage.getItem('driverId');
-    const busId = sessionStorage.getItem('driverBus');
+
+    // Manually setting driver ID since no login database
+    const driverId = "DRV-1001"; // Hardcoded for testing
+    const busId = "B-101"; // You can change this
 
     let watchId = null;
 
     function startLocationTracking(driverId, busId) {
-      if (!navigator.geolocation) {
-        alert("Geolocation is not supported by your browser.");
-        return;
-      }
+        if (!navigator.geolocation) {
+            alert("Geolocation is not supported by your browser.");
+            return;
+        }
 
-      watchId = navigator.geolocation.watchPosition(position => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
+        watchId = navigator.geolocation.watchPosition(position => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
 
-        firebase.database().ref('drivers/' + driverId).set({
-          bus: busId,
-          lat: lat,
-          lng: lng,
-          timestamp: new Date().toISOString()
+            // Debugging logs
+            console.log(`Tracking started for ${driverId}`);
+            console.log("Latitude:", lat, "Longitude:", lon);
+
+            // Send data to Firebase
+            firebase.database().ref('drivers/' + driverId + '/location').set({
+                bus: busId,
+                latitude: lat,
+                longitude: lon,
+                timestamp: new Date().toISOString()
+            }).then(() => {
+                console.log("Location successfully stored in Firebase");
+            }).catch(error => {
+                console.error("Firebase write error:", error);
+            });
+
+        }, error => {
+            console.error("Error getting location:", error);
+        }, {
+            enableHighAccuracy: true,
+            maximumAge: 0
         });
-
-        console.log("Location stored for", driverId, lat, lng);
-      }, error => {
-        console.error("Geolocation error:", error);
-        alert("Unable to get location. Please check GPS permissions.");
-      }, {
-        enableHighAccuracy: true,
-        maximumAge: 0
-      });
     }
 
     startShiftBtn.addEventListener('click', function () {
-      if (!driverId || !busId) {
-        alert("Driver session not found. Please log in again.");
-        return;
-      }
+        console.log("Start Shift button clicked");
 
-      startShiftBtn.disabled = true;
-      startShiftBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Tracking...';
+        startShiftBtn.disabled = true;
+        startShiftBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Tracking...';
 
-      startLocationTracking(driverId, busId);
+        startLocationTracking(driverId, busId);
     });
-  });
+});
+
 
 document.addEventListener('DOMContentLoaded', function() {
     const validCredentials = {
