@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', function() {
     const validCredentials = {
         admin: {
@@ -10,31 +9,6 @@ document.addEventListener('DOMContentLoaded', function() {
             "DRV-1002": { pin: "2222", route: "Route 2: Khopoli to Panvel", bus: "B-202" },
             "DRV-1003": { pin: "3333", route: "Route 3: Khopoli to Rasayani", bus: "B-303" }
         }
-    }
-    
-document.getElementById('startShiftBtn').addEventListener('click', function() {
-    if (!navigator.geolocation) {
-        alert("Geolocation is not supported by your browser");
-        return;
-    }
-
-    navigator.geolocation.getCurrentPosition(function(position) {
-        const driverId = sessionStorage.getItem('driverId') || 'unknown_driver';
-
-        const locationData = {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            timestamp: Date.now()
-        };
-
-        firebase.database().ref('locations/' + driverId).set(locationData)
-            .then(() => console.log("Location data written to Firebase"))
-            .catch(error => console.error("Error writing to Firebase:", error));
-    }, function(error) {
-        alert("Error getting location: " + error.message);
-    });
-});
-    
     };
 
     const routeInfo = {
@@ -198,7 +172,7 @@ document.getElementById('startShiftBtn').addEventListener('click', function() {
         });
 
         routingControl = L.Routing.control({
-            waypoints: Route1.waypoints,
+            waypoints: route1.waypoints,
             routeWhileDragging: false,
             router: L.Routing.osrmv1({
                 serviceUrl: 'https://router.project-osrm.org/route/v1'
