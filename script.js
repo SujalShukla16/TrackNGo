@@ -13,6 +13,54 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
+  document.addEventListener('DOMContentLoaded', function () {
+    const startShiftBtn = document.getElementById('startShiftBtn');
+    
+    const driverId = sessionStorage.getItem('driverId');
+    const busId = sessionStorage.getItem('driverBus');
+
+    let watchId = null;
+
+    function startLocationTracking(driverId, busId) {
+      if (!navigator.geolocation) {
+        alert("Geolocation is not supported by your browser.");
+        return;
+      }
+
+      watchId = navigator.geolocation.watchPosition(position => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+
+        firebase.database().ref('drivers/' + driverId).set({
+          bus: busId,
+          lat: lat,
+          lng: lng,
+          timestamp: new Date().toISOString()
+        });
+
+        console.log("Location stored for", driverId, lat, lng);
+      }, error => {
+        console.error("Geolocation error:", error);
+        alert("Unable to get location. Please check GPS permissions.");
+      }, {
+        enableHighAccuracy: true,
+        maximumAge: 0
+      });
+    }
+
+    startShiftBtn.addEventListener('click', function () {
+      if (!driverId || !busId) {
+        alert("Driver session not found. Please log in again.");
+        return;
+      }
+
+      startShiftBtn.disabled = true;
+      startShiftBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Tracking...';
+
+      startLocationTracking(driverId, busId);
+    });
+  });
+
 document.addEventListener('DOMContentLoaded', function() {
     const validCredentials = {
         admin: {
